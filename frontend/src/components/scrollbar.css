@@ -1,0 +1,17 @@
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px; /* Set the width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #19191c; /* Set track background */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #434343; /* Set thumb color */
+    border-radius: 100px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Set thumb hover color */
+}
