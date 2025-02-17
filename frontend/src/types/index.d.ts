@@ -60,3 +60,18 @@ declare type TeacherSliceProps = {
     profileImg: string,
     isData: boolean
 }
+
+declare type AttendanceRequestProps = {
+    name: string,
+    enroll: number,
+    profileUrl: string,
+    batch: string,
+    course: string,
+    date: Date,
+    reason: string,
+    proof: string
+}
+
+declare type AttendanceRequestTableProps = {
+    data: AttendanceRequestProps[] | null;
+}

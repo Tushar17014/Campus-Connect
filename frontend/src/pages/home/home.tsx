@@ -6,12 +6,13 @@ import Header from "@/components/header"
 import HomeCardGrid from "@/components/homeCardGrid"
 import MainLoader from "@/components/mainLoader";
 import PieChartComponent from "@/components/pieChartComponent";
-import StudentListWidget from "@/components/studentsListWidget/studentListWidget";
+import AttendanceRequestWidget from "@/components/attendanceRequestWidget/attendanceRequestWidget";
 import { formatDate } from "@/lib/utils";
 import { RootState } from "@/store/store";
 import { Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { getAttendanceRequestsForTeacherByUid } from "@/apis/attendanceRequest";
 
 
 const fetchStudentRecords = async (cid: string | null, attendanceRecords: { enroll: number, status: boolean }[]) => {
@@ -34,9 +35,64 @@ const Home = () => {
   const [presentStudent, setPresentStudents] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [prevCourse, setPrevCourse] = useState<string | null>(null);
-  const [studentRecords, setStudentRecords] = useState(null);
+  // const [studentRecords, setStudentRecords] = useState(null);
+  const [attendanceRequests, setAttendanceRequests] = useState(null);
+  // const [attendanceRequests, setAttendanceRequests] = useState(
+  //   [
+  //     {
+  //       "enroll": 1001,
+  //       "name": "Aarav Sharma",
+  //       "batch": "B1",
+  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
+  //       "course": "Machine Learning",
+  //       "date" : "12/12/2024",
+  //       "reason": "Placement Drive",
+  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
+  //     },
+  //     {
+  //       "enroll": 1001,
+  //       "name": "Aarav Sharma",
+  //       "batch": "B1",
+  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
+  //       "course": "Machine Learning",
+  //       "date" : "12/12/2024",
+  //       "reason": "Placement Drive",
+  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
+  //     },
+  //     {
+  //       "enroll": 1001,
+  //       "name": "Aarav Sharma",
+  //       "batch": "B1",
+  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
+  //       "course": "Machine Learning",
+  //       "date" : "12/12/2024",
+  //       "reason": "Placement Drive",
+  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
+  //     },
+  //     {
+  //       "enroll": 1001,
+  //       "name": "Aarav Sharma",
+  //       "batch": "B1",
+  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
+  //       "course": "Machine Learning",
+  //       "date" : "12/12/2024",
+  //       "reason": "Placement Drive",
+  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
+  //     },
+  //     {
+  //       "enroll": 1001,
+  //       "name": "Aarav Sharma",
+  //       "batch": "B1",
+  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
+  //       "course": "Machine Learning",
+  //       "date" : "12/12/2024",
+  //       "reason": "Placement Drive",
+  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
+  //     },
+  //   ])
   const [announcements, setAnnouncements] = useState(null);
   const hasAnnouncementFetched = useRef(false);
+  const hasAttendanceRequestsFetched = useRef(false);
 
   const coursesArray = teacherData.courses;
 
@@ -63,6 +119,14 @@ const Home = () => {
       };
       fetchAnnouncements();
     }
+    if(teacherData && teacherData.uid && !attendanceRequests && !hasAttendanceRequestsFetched.current){
+      hasAttendanceRequestsFetched.current = true;
+      const fetchAttendanceRequests = async () => {
+        const response = await getAttendanceRequestsForTeacherByUid(teacherData.uid);
+        setAttendanceRequests(response);
+      };
+      fetchAttendanceRequests();
+    }
   }, [teacherData]);
 
   useEffect(() => {
@@ -72,8 +136,8 @@ const Home = () => {
     if (selectedDate.day && selectedCourse && (prevDate?.isoDate != selectedDate.isoDate || prevCourse != selectedCourse)) {
        const fetchData = async () => {
         const response = await getAttendanceByCourseDate(selectedCourse, selectedDate.isoDate);
-        const studentRecs = await fetchStudentRecords(selectedCourse, response);
-        setStudentRecords(studentRecs);
+        // const studentRecs = await fetchStudentRecords(selectedCourse, response);
+        // setStudentRecords(studentRecs);
         setPresentStudents(response?.filter((record: any) => record.status).length || 0);
         setTotalStudents(response?.length || 0);
         setPrevCourse(selectedCourse);
@@ -85,7 +149,7 @@ const Home = () => {
 
   return (
     <div className="flex-1 overflow-auto relative">
-      {coursesArray && studentRecords && presentStudent != null && totalStudents != null && totalClasses != null ? (
+      {coursesArray && presentStudent != null && totalStudents != null && totalClasses != null ? (
         <div>
           <Header title="Dashboard" selectedDate={(value) => setSelectedDate(value)} selectedCourse={(value) => setSelectedCourse(value)} availableCourses={coursesArray} />
           <main className="p-10 flex flex-col gap-10">
@@ -102,7 +166,7 @@ const Home = () => {
                 <PieChartComponent present={presentStudent} />
               </div>
               <div className="col-span-4">
-                <StudentListWidget data={studentRecords} />
+                <AttendanceRequestWidget data={attendanceRequests} />
               </div>
             </div>
           </main>
