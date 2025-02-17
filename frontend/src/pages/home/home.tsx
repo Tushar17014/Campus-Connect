@@ -123,7 +123,8 @@ const Home = () => {
       hasAttendanceRequestsFetched.current = true;
       const fetchAttendanceRequests = async () => {
         const response = await getAttendanceRequestsForTeacherByUid(teacherData.uid);
-        setAttendanceRequests(response);
+        const attendanceRequestData = response.filter((item : any) => item.status == "pending");
+        setAttendanceRequests(attendanceRequestData);
       };
       fetchAttendanceRequests();
     }
@@ -149,7 +150,7 @@ const Home = () => {
 
   return (
     <div className="flex-1 overflow-auto relative">
-      {coursesArray && presentStudent != null && totalStudents != null && totalClasses != null ? (
+      {coursesArray && presentStudent != null && totalStudents != null && totalClasses != null && attendanceRequests ? (
         <div>
           <Header title="Dashboard" selectedDate={(value) => setSelectedDate(value)} selectedCourse={(value) => setSelectedCourse(value)} availableCourses={coursesArray} />
           <main className="p-10 flex flex-col gap-10">

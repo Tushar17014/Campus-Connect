@@ -2,20 +2,21 @@ import { AttendanceRequests } from "../models/attendanceRequests.model.js";
 import { Courses } from "../models/courses.model.js";
 import { StudentData } from "../models/studentData.model.js";
 import { TeacherData } from "../models/TeacherData.model.js";
+import { updateAttendance } from "./attendance.controller.js"
 
 export async function createAttendanceRequest(req, res) {
     try {
-        const {enroll, uid, cid, date, reason} = req.body;
+        const { enroll, uid, cid, date, reason } = req.body;
 
-        if(!req.file){
+        if (!req.file) {
             return res.status(400).json({ error: "Proof image is required" });
         }
         const proof = req.file.buffer;
-        const CourseData = await Courses.findOne({cid});
+        const CourseData = await Courses.findOne({ cid });
         if (!CourseData) return res.status(404).json({ error: "Course not found" });
         const course = CourseData._id;
 
-        const data = await AttendanceRequests.create({enroll, uid, course, date, reason, proof: proof});
+        const data = await AttendanceRequests.create({ enroll, uid, course, date, reason, proof: proof });
 
         return res.status(200).json(data);
     } catch (err) {
@@ -24,22 +25,43 @@ export async function createAttendanceRequest(req, res) {
 }
 export async function getAttendanceRequestsForTeacherByUid(req, res) {
     try {
-        const data = await AttendanceRequests.find({uid: req.query.uid}).populate("course");
+        const data = await AttendanceRequests.find({ uid: req.query.uid }).populate("course");
         let output = await Promise.all(data.map(async (record) => {
             const imageBase64 = record.proof ? `data:image/png;base64,${record.proof.toString("base64")}` : "";
-            const studentData = await StudentData.findOne({enroll: record.enroll});
+            const studentData = await StudentData.findOne({ enroll: record.enroll });
             return {
+                _id: record._id,
                 name: studentData.name,
                 enroll: record.enroll,
                 profileUrl: studentData.profileUrl,
                 batch: studentData.batch,
-                course: record.course.name,
+                course: record.course,
                 date: record.date,
                 reason: record.reason,
-                proof: imageBase64
+                proof: imageBase64,
+                status: record.status
             };
         }));
         return res.status(200).json(output);
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
+export async function handleAttendanceRequest(req, res, next) {
+    try {
+        const { enroll, cid, date, status, attendanceRequestId } = req.body;
+        if (status == "approved") {
+            await AttendanceRequests.updateOne({ _id: attendanceRequestId }, { status });
+            const output = await updateAttendance(enroll, cid, date);
+            return res.status(200).json({message: "Approved", ...output});
+        }
+        
+        await AttendanceRequests.updateOne({ _id: attendanceRequestId }, { status: "denied" });
+        if(status == "denied"){
+            return res.status(200).json({ message: "Denied" });
+        }
+        return res.status(200).json({message: "Fulfilled"});
     } catch (err) {
         console.error(err.message);
     }

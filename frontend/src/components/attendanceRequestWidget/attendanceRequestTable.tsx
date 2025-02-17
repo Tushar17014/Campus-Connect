@@ -20,12 +20,34 @@ import { useState } from "react"
 import { Loader } from "lucide-react"
 import { DialogTitle } from "@radix-ui/react-dialog"
 import { formatToddmmyy } from "@/lib/utils"
+import { handleAttendanceRequest } from "@/apis/attendanceRequest"
+import { useToast } from "@/hooks/use-toast"
 
 const AttendanceRequestTable = ({ data }: AttendanceRequestTableProps) => {
+    const {toast} = useToast();
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [attendanceRequests, setAttendanceRequests] = useState(data);
+
+    const handleRequest = async (enroll: number, cid: string, date: Date, status: string, attendanceRequestId: string) => {
+        const response = await handleAttendanceRequest(enroll, cid, date, status, attendanceRequestId);
+        if(response.message == "Approved"){
+            toast({
+                title: "Attendance Approved",
+                description: `Attendance for ${enroll} has been approved`
+            })
+        }  
+        else if(response.message == "Denied"){
+            toast({
+                title: "Attendance Rejected",
+                description: `Attendance for ${enroll} has been rejected`
+            })
+        }  
+        setAttendanceRequests(prev => prev.filter(item => item._id !== attendanceRequestId));
+    }
+
     return (
         <div>
-            {data && data?.length > 0 ? (
+            {attendanceRequests && attendanceRequests?.length > 0 ? (
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -39,7 +61,7 @@ const AttendanceRequestTable = ({ data }: AttendanceRequestTableProps) => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data?.map((item, idx) => (
+                        {attendanceRequests?.map((item, idx) => (
                             <Dialog key={idx}>
                                 <TableRow className="h-20">
                                     <TableCell>
@@ -52,7 +74,7 @@ const AttendanceRequestTable = ({ data }: AttendanceRequestTableProps) => {
                                     </TableCell>
                                     <TableCell>{item.enroll}</TableCell>
                                     <TableCell>{item.batch}</TableCell>
-                                    <TableCell>{item.course}</TableCell>
+                                    <TableCell>{item.course.name}</TableCell>
                                     <TableCell>{formatToddmmyy(item.date)}</TableCell>
                                     <TableCell>
                                         <DialogTrigger asChild>
@@ -61,8 +83,8 @@ const AttendanceRequestTable = ({ data }: AttendanceRequestTableProps) => {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex gap-5">
-                                            <Button className="bg-green-500 hover:bg-green-600 active:scale-95">Approve</Button>
-                                            <Button className="bg-red-500 hover:bg-red-600 active:scale-95">Deny</Button>
+                                            <Button className="bg-green-500 hover:bg-green-600 active:scale-95" onClick={() => handleRequest(item.enroll, item.course.cid, item.date, "approved", item._id)}>Approve</Button>
+                                            <Button className="bg-red-500 hover:bg-red-600 active:scale-95" onClick={() => handleRequest(item.enroll, item.course.cid, item.date, "denied", item._id)}>Deny</Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

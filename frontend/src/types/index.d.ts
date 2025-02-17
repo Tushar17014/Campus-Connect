@@ -62,18 +62,19 @@ declare type TeacherSliceProps = {
 }
 
 declare type AttendanceRequestProps = {
+    _id: string,
     name: string,
     enroll: number,
     profileUrl: string,
     batch: string,
-    course: string,
+    course: CoursesProps,
     date: Date,
     reason: string,
     proof: string
 }
 
 declare type AttendanceRequestTableProps = {
-    data: AttendanceRequestProps[] | null;
+    data: AttendanceRequestProps[];
 }
 
 declare type LectureSummariesProps = {

@@ -27,7 +27,7 @@ const Lectures = () => {
   const availableCourses = teacherData.courses
 
   useEffect(() => {
-    if(teacherData && teacherData.uid && lectureSummariesRecords.length == 0){
+    if (teacherData && teacherData.uid && lectureSummariesRecords.length == 0) {
       const fetchLectures = async () => {
         const response = await getLecturesByTeacher(teacherData.uid);
         setLectureSummariesRecords(response);
@@ -65,15 +65,13 @@ const Lectures = () => {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-2">
-                <div className="flex gap-5">
-                  <Input className="w-96 bg-black text-white h-14 text-lg" placeholder="Lecture Name" onChange={(e) => setLectureName(e.target.value)} />
-                </div>
-                <div className="flex gap-6">
-                  <DateSelector selectedDate={(value) => setSelectedDate(value)} />
-                  <CourseSelector availableCourses={availableCourses} selectedCourse={(value) => setSelectedCourse(value)} />
-                </div>
                 <form onSubmit={handleSubmit} encType='multipart/form-data' method='POST'>
-                  <AudioUploadComponent uploadedAudio={setUploadedAudio} />
+                  <div className="flex gap-5">
+                    <Input className="w-96 bg-black text-white h-12 text-lg" placeholder="Lecture Name" onChange={(e) => setLectureName(e.target.value)} />
+                    <DateSelector selectedDate={(value) => setSelectedDate(value)} />
+                    <CourseSelector availableCourses={availableCourses} selectedCourse={(value) => setSelectedCourse(value)} />
+                    <AudioUploadComponent uploadedAudio={setUploadedAudio} />
+                  </div>
                   {uploadedAudio && selectedCourse && selectedDate && lectureName != "" && (
                     <Button type="submit" className="ml-1">Submit</Button>
                   )}
@@ -81,7 +79,7 @@ const Lectures = () => {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-mainbg max-h-[350px] min-h-[350px] m-5 overflow-y-hidden hover:overflow-y-auto custom-scrollbar">
+          <Card className="bg-mainbg max-h-[440px] min-h-[440px] m-5 overflow-y-hidden hover:overflow-y-auto custom-scrollbar">
             <CardHeader >
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-semibold">Lecture Summaries</h3>

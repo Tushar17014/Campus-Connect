@@ -27,7 +27,7 @@ const AudioUploadComponent: React.FC<AudioUploadComponentProps> = ({ uploadedAud
         accept="audio/mpeg"
         name="audio"
         onChange={handleAudioChange}
-        className="block w-[280px] bg-black items-center justify-center pt-2 text-sm text-gray-400 file:mr-4 file:p-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-white file:text-black hover:file:bg-violet-100 mb-4 h-14 w-96"
+        className="block w-[280px] bg-black items-center justify-center pt-3 text-sm text-gray-400 file:mr-4 file:p-1 file:px-2 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-white file:text-black hover:file:bg-violet-100 mb-4 h-12 w-96"
       />
       {preview && (
         <div className="mb-4">

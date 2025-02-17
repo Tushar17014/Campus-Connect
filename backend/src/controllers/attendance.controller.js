@@ -1,4 +1,33 @@
 import { Attendance } from "../models/attendance.model.js";
+import { AttendanceRequests } from "../models/attendanceRequests.model.js";
+
+export const updateAttendance = async (enroll, cid, date) => {
+    const data = await Attendance.findOne({ enroll });
+
+    let flag = false;
+    let output = {};
+
+    data.courses?.forEach(ele => {
+        if (ele.cid == cid) {
+            const attendanceRecord = ele.attendanceRecords?.find(rec =>
+                rec.date.toISOString() === date
+            );
+            if (attendanceRecord) {
+                if(!attendanceRecord.status){
+                    attendanceRecord.status = true;
+                    flag = true;
+                }
+            }
+        }
+    })
+    if (flag) {
+        data.markModified("courses");
+        await data.save();
+        output = await Attendance.findOne({ enroll });
+    }
+    return output;
+
+}
 
 export async function getAttendanceByCourseDate(req, res) {
     try {
@@ -52,6 +81,16 @@ export async function getAttendanceByCourse(req, res, next) {
             }
         })
         return res.status(200).json(newdata);
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
+export async function updateAttendanceByDate(req, res, next) {
+    try {
+        const { enroll, cid, date } = req.body;
+        const output = await updateAttendance(enroll, cid, date);
+        return res.status(200).json(output);
     } catch (err) {
         console.error(err.message);
     }
