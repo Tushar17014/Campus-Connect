@@ -10,16 +10,16 @@ import StudentListWidget from "@/components/studentsListWidget/studentListWidget
 import { formatDate } from "@/lib/utils";
 import { RootState } from "@/store/store";
 import { Loader } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 
-const fetchStudentRecords = async (cid: string, attendanceRecords: { enroll: number, status: boolean }[]) => {
+const fetchStudentRecords = async (cid: string | null, attendanceRecords: { enroll: number, status: boolean }[]) => {
   const studentByCourse = await getStudentByCourse(cid);
   let newData: any = [];
   attendanceRecords?.forEach((rec) => {
-    let d = studentByCourse.find((student : any) => student.enroll == rec.enroll);
-    d = {...d, status: rec.status};
+    let d = studentByCourse.find((student: any) => student.enroll == rec.enroll);
+    d = { ...d, status: rec.status };
     newData.push(d);
   })
   return newData;
@@ -27,18 +27,21 @@ const fetchStudentRecords = async (cid: string, attendanceRecords: { enroll: num
 
 const Home = () => {
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+  const [prevDate, setPrevDate] = useState<{ day: string , isoDate: string } | null>(null);
   const teacherData = useSelector((state: RootState) => state.teacherReducer);
   const [totalStudents, setTotalStudents] = useState(null);
   const [totalClasses, setTotalClasses] = useState(null);
   const [presentStudent, setPresentStudents] = useState(null);
-  const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [prevCourse, setPrevCourse] = useState<string | null>(null);
   const [studentRecords, setStudentRecords] = useState(null);
   const [announcements, setAnnouncements] = useState(null);
+  const hasAnnouncementFetched = useRef(false);
 
   const coursesArray = teacherData.courses;
 
   useEffect(() => {
-    if (selectedCourse != "") {
+    if (selectedCourse) {
       const fetchData = async () => {
         const response2 = await getAttendanceByCourse(selectedCourse);
         setTotalClasses(response2[0]?.attendanceRecords?.length || 0);
@@ -48,27 +51,33 @@ const Home = () => {
   }, [selectedCourse]);
 
   useEffect(() => {
-    if(teacherData.uid && !announcements){
+    if (teacherData && teacherData.uid && !announcements && !hasAnnouncementFetched.current) {
+      hasAnnouncementFetched.current = true;
       const fetchAnnouncements = async () => {
-        const response = await getAnnouncementByTeacher(teacherData?.uid);
+        const response = await getAnnouncementByTeacher(teacherData.uid);
         let announcementData: any = [];
         response?.forEach((obj: any) => {
-          if(obj.isActive) announcementData.push(obj);
+          if (obj.isActive) announcementData.push(obj);
         })
         setAnnouncements(announcementData);
       };
       fetchAnnouncements();
     }
-    if (teacherData.courses && selectedCourse == "") {
-      setSelectedCourse(teacherData?.courses[0].cid)
+  }, [teacherData]);
+
+  useEffect(() => {
+    if (teacherData.courses && !selectedCourse) {
+      setSelectedCourse(teacherData?.courses[0].cid);
     }
-    if (selectedDate.day != "" && selectedCourse != "") {
-      const fetchData = async () => {
+    if (selectedDate.day && selectedCourse && (prevDate?.isoDate != selectedDate.isoDate || prevCourse != selectedCourse)) {
+       const fetchData = async () => {
         const response = await getAttendanceByCourseDate(selectedCourse, selectedDate.isoDate);
         const studentRecs = await fetchStudentRecords(selectedCourse, response);
         setStudentRecords(studentRecs);
         setPresentStudents(response?.filter((record: any) => record.status).length || 0);
         setTotalStudents(response?.length || 0);
+        setPrevCourse(selectedCourse);
+        setPrevDate(selectedDate);
       };
       fetchData();
     }
@@ -84,7 +93,7 @@ const Home = () => {
             <div className="grid grid-cols-4 gap-10">
               <div className="col-span-2">
                 {announcements && teacherData.uid ? (
-                  <AnnouncementsWidget announcementData={announcements} uid={teacherData.uid}/>
+                  <AnnouncementsWidget announcementData={announcements} uid={teacherData.uid} />
                 ) : (
                   <Loader />
                 )}

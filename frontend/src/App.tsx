@@ -7,6 +7,7 @@ import Redirect from "./pages/redirect"
 import ContentProvider from "./providers/contentProvider"
 import { useEffect } from "react"
 import { websiteTitle } from "./constants"
+import AttendanceRequests from "./pages/attendanceRequests/attendanceRequests"
 function App() {
   useEffect(() => {
     document.title = websiteTitle;
@@ -24,6 +25,7 @@ function App() {
             </AuthProvider>
           }>
             <Route path="/" element={<Home />} />
+            <Route path="/attendance-requests" element={<AttendanceRequests />} />
           </Route>
             <Route path="*" element={<Redirect />} />
         </Routes>

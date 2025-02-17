@@ -4,8 +4,8 @@ import { deleteAnnouncement, getAnnouncementByTeacher, makeAnnouncement } from "
 
 const router = Router();
 
-router.get("/teacherAnnouncements", getAnnouncementByTeacher);
-router.post("/makeAnnouncement", makeAnnouncement);
-router.post("/deleteAnnouncement", deleteAnnouncement);
+router.get("/teacherAnnouncements", protectedRoute, getAnnouncementByTeacher);
+router.post("/makeAnnouncement", protectedRoute, requireTeacher, makeAnnouncement);
+router.post("/deleteAnnouncement", protectedRoute, requireTeacher, deleteAnnouncement);
 
 export default router;
