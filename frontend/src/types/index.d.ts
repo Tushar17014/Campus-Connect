@@ -75,3 +75,17 @@ declare type AttendanceRequestProps = {
 declare type AttendanceRequestTableProps = {
     data: AttendanceRequestProps[] | null;
 }
+
+declare type LectureSummariesProps = {
+    name: string,
+    course: {
+        cid: string,
+        name: string
+    },
+    date: Date,
+    summary: string
+}
+
+declare type LectureSummariesTableProps = {
+    data: LectureSummariesProps[] | null;
+}
