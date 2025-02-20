@@ -22,6 +22,7 @@ const Lectures = () => {
   const [lectureName, setLectureName] = useState("");
   const [groupByCourse, setGroupByCourse] = useState<string | null>("All");
   const [lectureSummariesRecords, setLectureSummariesRecords] = useState([]);
+  const [filteredLectures, setFilteredLectures] = useState(lectureSummariesRecords);
   const teacherData = useSelector((state: RootState) => state.teacherReducer);
 
   const availableCourses = teacherData.courses
@@ -49,8 +50,12 @@ const Lectures = () => {
     const formData = new FormData();
     formData.append('audio', uploadedAudio);
   }
-
-  const filteredLectures = groupByCourse === "All" ? lectureSummariesRecords : lectureSummariesRecords.filter((lecture: any) => lecture.course.cid == groupByCourse);
+  
+  useEffect(() => {
+    if(groupByCourse && lectureSummariesRecords.length > 0){
+      setFilteredLectures(groupByCourse === "All" ? lectureSummariesRecords : lectureSummariesRecords.filter((lecture: any) => lecture.course.cid == groupByCourse));
+    }
+  }, [groupByCourse, lectureSummariesRecords]);
 
   return (
     <div className="flex-1 overflow-auto relative">
@@ -83,7 +88,7 @@ const Lectures = () => {
             <CardHeader >
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-semibold">Lecture Summaries</h3>
-                <CourseSelector availableCourses={availableCourses} selectedCourse={(value) => setGroupByCourse(value)} />
+                <CourseSelector availableCourses={availableCourses} selectedCourse={(value) => setGroupByCourse(value)} selectAllOption={true}/>
               </div>
             </CardHeader>
             <Separator className="mb-5" />
