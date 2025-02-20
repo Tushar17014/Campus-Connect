@@ -33,3 +33,13 @@ export async function deleteAnnouncement(announcementID: string) {
         return {};
     }
 }
+
+export async function getAnnouncementByStudent(enroll: number | null) {
+    try{
+        const response = await axiosInstance.get(`/announcements/studentAnnouncements?enroll=${enroll}`);
+        return response.data;
+    } catch(err: any){
+        console.error(err.message);
+        return {};
+    }
+}

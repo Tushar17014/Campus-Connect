@@ -22,7 +22,7 @@ export const StudentLogin = async (req, res) => {
     try {
         const { enroll, password } = req.body;
         if (!enroll || !password) return res.json({ message: "Fields Missing" });
-        const user = await StudentData.findOne({ enroll, password });
+        const user = await StudentData.findOne({ enroll, password }).populate("courses");
         if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
         const token = createSecretToken(user._id);

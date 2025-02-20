@@ -4,15 +4,19 @@ import { Separator } from "../ui/separator"
 import AnnouncementTable from "./announcementTable"
 import NewAnnouncementDialog from "./newAnnouncementDialog"
 import { useState } from "react"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
 
 interface AnnouncementWidgetsPropsWithData {
     announcementData: AnnouncementTableProps[],
-    uid: string,
+    uid?: string,
     availableCourses?: { cid: string, name: string }[];
 }
 
-const AnnouncementsWidget = ({announcementData, uid, availableCourses} : AnnouncementWidgetsPropsWithData) => {
+const AnnouncementsWidget = ({ announcementData, uid, availableCourses }: AnnouncementWidgetsPropsWithData) => {
     const [announcements, setAnnouncements] = useState(announcementData);
+
+    const userType = useSelector((state: RootState) => state.authReducer.userType);
 
     const handleNewAnnouncement = (newAnnouncement: AnnouncementTableProps) => {
         setAnnouncements(prev => [newAnnouncement, ...prev]);
@@ -22,14 +26,16 @@ const AnnouncementsWidget = ({announcementData, uid, availableCourses} : Announc
             <CardHeader >
                 <div className="flex justify-between items-center">
                     <h3 className="text-xl font-semibold">Announcements</h3>
-                    <NewAnnouncementDialog uid={uid} onNewAnnouncement={handleNewAnnouncement} availableCourses={availableCourses}/>
+                    {userType == "teacher" && uid && (
+                        <NewAnnouncementDialog uid={uid} onNewAnnouncement={handleNewAnnouncement} availableCourses={availableCourses} />
+                    )}
                 </div>
             </CardHeader>
 
-            <Separator className="-mt-4 mb-5"/>
+            <Separator className="-mt-4 mb-5" />
 
             <CardContent>
-                <AnnouncementTable key={announcements.length} announcementData={announcements}/>
+                <AnnouncementTable key={announcements.length} announcementData={announcements} />
             </CardContent>
 
         </Card>

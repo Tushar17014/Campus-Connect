@@ -22,6 +22,8 @@ import { deleteAnnouncement } from "@/apis/announcement";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 interface AnnouncementTablePropsWithData {
     announcementData: AnnouncementTableProps[];
@@ -30,6 +32,8 @@ interface AnnouncementTablePropsWithData {
 const AnnouncementTable = ({ announcementData }: AnnouncementTablePropsWithData) => {
 
     const [announcements, setAnnouncements] = useState(announcementData);
+
+    const userType = useSelector((state : RootState) => state.authReducer.userType);
 
     const DeleteAnnouncementRecord = async (announcementId: string) => {
         await deleteAnnouncement(announcementId);
@@ -43,16 +47,24 @@ const AnnouncementTable = ({ announcementData }: AnnouncementTablePropsWithData)
                         <TableRow>
                             <TableHead>Date</TableHead>
                             <TableHead>Course</TableHead>
+                            {userType == "student" && (
+                                <TableHead>Teacher</TableHead>
+                            )}
                             <TableHead>Title</TableHead>
                             <TableHead>Message</TableHead>
-                            <TableHead className="w-10 text-right">Action</TableHead>
+                            {userType == "teacher" && (
+                                <TableHead className="w-10 text-right">Action</TableHead>
+                            )}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {announcements.map((item, idx) => (
                             <TableRow key={idx} className="h-14">
                                 <TableCell className="font-medium max-w-14 truncate">{formatToddmmyy(item.createdAt)}</TableCell>
-                                <TableCell className="truncate max-w-14">{item.course.name}</TableCell>
+                                <TableCell className="truncate max-w-20">{item.course.name}</TableCell>
+                                {userType == "student" && (
+                                    <TableCell className="truncate max-w-20">{item.author?.name}</TableCell>
+                                )}
                                 <TableCell className="truncate max-w-20">{item.title}</TableCell>
                                 <Dialog>
                                     <DialogTrigger asChild>
@@ -69,24 +81,26 @@ const AnnouncementTable = ({ announcementData }: AnnouncementTablePropsWithData)
                                         {item.message}
                                     </DialogContent>
                                 </Dialog>
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <TableCell className="flex justify-center items-center h-14">
-                                            <Trash2 className="text-red-500 cursor-pointer hover:scale-110 active:scale-90" size={20} />
-                                        </TableCell>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle>Are you sure you want to delete this announcement?</DialogTitle>
-                                        </DialogHeader>
-                                        <DialogFooter>
-                                            <DialogClose className="flex gap-8">
-                                                <Button onClick={() => { DeleteAnnouncementRecord(item._id) }}>Yes</Button>
-                                                <Button>No</Button>
-                                            </DialogClose>
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
+                                {userType == "teacher" && (
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <TableCell className="flex justify-center items-center h-14">
+                                                <Trash2 className="text-red-500 cursor-pointer hover:scale-110 active:scale-90" size={20} />
+                                            </TableCell>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>Are you sure you want to delete this announcement?</DialogTitle>
+                                            </DialogHeader>
+                                            <DialogFooter>
+                                                <DialogClose className="flex gap-8">
+                                                    <Button onClick={() => { DeleteAnnouncementRecord(item._id) }}>Yes</Button>
+                                                    <Button>No</Button>
+                                                </DialogClose>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
+                                )}
                             </TableRow>
                         ))}
                     </TableBody>

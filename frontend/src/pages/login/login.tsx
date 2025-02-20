@@ -9,7 +9,8 @@ import { useState } from "react"
 import { StudentLogin, TeacherLogin } from "@/apis/auth"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { setUserData } from "@/features/teacher/teacherSlice"
+import { setTeacherData } from "@/features/teacher/teacherSlice"
+import { setStudentData } from "@/features/student/studentSlice"
 import { websiteTitle } from "@/constants"
 
 const Login = () => {
@@ -26,14 +27,14 @@ const Login = () => {
         const res = await StudentLogin(enroll, studentPassword);
         if(res?.statusCode == 200){
             localStorage.setItem("token", res.data?.token);
-            localStorage.setItem("userid", res.data?.user.enroll);
-            dispatch(setUserData(res.data?.user));
-            navigate("/studentDashboard");
+            localStorage.setItem("enroll", res.data?.user.enroll);
+            dispatch(setStudentData(res.data?.user));
+            navigate("/student");
         }
         else{
             toast({
                 title: "Invalid Credentials",
-                description: "Please enter valid user id or password",
+                description: "Please enter valid enroll or password",
                 variant: "destructive",
             })
         }
@@ -43,9 +44,9 @@ const Login = () => {
         const res = await TeacherLogin(uid, teacherPassword);
         if(res?.statusCode == 200){
             localStorage.setItem("token", res.data?.token);
-            localStorage.setItem("userid", res.data?.user.uid);
-            dispatch(setUserData(res.data?.user));
-            navigate("/");
+            localStorage.setItem("teacherid", res.data?.user.uid);
+            dispatch(setTeacherData(res.data?.user));
+            navigate("/teacher");
         }
         else{
             toast({

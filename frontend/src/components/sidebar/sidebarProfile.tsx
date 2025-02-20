@@ -7,7 +7,7 @@ import { DropdownMenuContent, DropdownMenuItem } from "../ui/dropdown-menu"
 import { SidebarProfileProps } from "@/types"
 
 
-const SidebarProfile = ({firstName, lastName, userID, userPhoto} : SidebarProfileProps) => {
+const SidebarProfile = ({name, userID, userPhoto} : SidebarProfileProps) => {
     const { isMobile } = useSidebar();
     const Logout = () => {
         localStorage.clear();
@@ -24,11 +24,11 @@ const SidebarProfile = ({firstName, lastName, userID, userPhoto} : SidebarProfil
                                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                             >
                                 <Avatar className="h-10 w-10 rounded-full mr-2">
-                                    <AvatarImage src={userPhoto} alt={firstName}/>
-                                    <AvatarFallback className="rounded-full">{`${firstName[0]}${lastName[0]}`}</AvatarFallback>
+                                    <AvatarImage src={userPhoto} alt={name}/>
+                                    <AvatarFallback className="rounded-full">{name}</AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-md leading-tight">
-                                    <span className="truncate font-semibold">{firstName} {lastName}</span>
+                                    <span className="truncate font-semibold">{name}</span>
                                     <span className="truncate text-sm">{userID}</span>
                                 </div>
                                 <ChevronsUpDown className="ml-auto size-4" />

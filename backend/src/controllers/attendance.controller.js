@@ -86,6 +86,26 @@ export async function getAttendanceByCourse(req, res, next) {
     }
 }
 
+export async function getAttendanceByCourseEnroll(req, res, next) {
+    try {
+        const data = await Attendance.find().lean();
+        let newdata = null;
+        data?.forEach(x => {
+            if (x.enroll == req.query.enroll) {
+                for (let ele in x.courses) {
+                    if (x.courses[ele].cid == req.query.cid) {
+                        newdata = x.courses[ele].attendanceRecords;
+                        break;
+                    }
+                }
+            }
+        })
+        return res.status(200).json(newdata ? newdata : []);
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
 export async function updateAttendanceByDate(req, res, next) {
     try {
         const { enroll, cid, date } = req.body;

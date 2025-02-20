@@ -12,10 +12,14 @@ const Header = ({title, selectedDate, selectedCourse, availableCourses} : Header
     return (
         <header className="bg-mainbg shadow-lg border-b border-[hsl(0 0% 14.9%)] min-h-24 flex items-center justify-between">
             <h1 className="text-2xl font-semibold pl-10">{title}</h1>
-            {title == "Dashboard" && selectedDate && availableCourses && selectedCourse &&(
+            {title == "Dashboard" &&(
                 <div className="pr-10 flex gap-5 items-center">
-                    <DateSelector selectedDate={selectedDate}/>
-                    <CourseSelector availableCourses={availableCourses} selectedCourse={selectedCourse}/>
+                    {selectedDate && (
+                        <DateSelector selectedDate={selectedDate}/>
+                    )}
+                    {selectedCourse && availableCourses && (
+                        <CourseSelector availableCourses={availableCourses} selectedCourse={selectedCourse}/>
+                    )}
                 </div>
             )}
         </header>

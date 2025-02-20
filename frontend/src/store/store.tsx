@@ -1,9 +1,13 @@
+import authReducer from '@/features/authSlice'
 import teacherReducer from '@/features/teacher/teacherSlice'
+import studentReducer from '@/features/student/studentSlice'
 import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({
   reducer: {
+    authReducer: authReducer,
     teacherReducer: teacherReducer,
+    studentReducer: studentReducer,
   },
 })
 

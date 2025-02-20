@@ -1,10 +1,19 @@
 import { LucideIcon } from "lucide-react"
 
+declare type AppSideBarProp = {
+    userType: string
+}
+
 declare type SidebarProfileProps = {
-    firstName: string,
-    lastName: string,
-    userID: string | null,
+    name: string,
+    userID: string | number | null,
     userPhoto: string,
+}
+
+declare type SideBarListProps = {
+    title: string,
+    url: string,
+    icon: LucideIcon
 }
 
 declare type HomeCardProps = {
@@ -15,10 +24,15 @@ declare type HomeCardProps = {
 }
 
 declare type HomeCardGridProps = {
-    students: number,
-    present: number,
-    absent: number,
-    classes: number
+    userType: string,
+    students?: number,
+    present?: number,
+    absent?: number,
+    classes?: number,
+    studentPresent? : number,
+    studentPresentCount? : number,
+    studentAbsentCount? : number,
+    studentClasses? : number
 }
 
 declare type AnnouncementTableProps = {
@@ -27,7 +41,8 @@ declare type AnnouncementTableProps = {
     title: string,
     createdAt: Date,
     message: string,
-    isActive: boolean
+    isActive: boolean,
+    author?: TeacherSliceProps
 }
 
 declare type StudentTablePropsArray = {
@@ -56,10 +71,13 @@ declare type TeacherSliceProps = {
     _id: string | null,
     uid: string | null,
     courses: CoursesProps[] | null,
-    firstName: string,
-    lastName: string,
+    name: string,
     profileImg: string,
     isData: boolean
+}
+
+declare type AuthSliceProps = {
+    userType: string;
 }
 
 declare type AttendanceRequestProps = {
@@ -90,4 +108,20 @@ declare type LectureSummariesProps = {
 
 declare type LectureSummariesTableProps = {
     data: LectureSummariesProps[] | null;
+}
+
+
+// Student
+
+declare type StudentSliceProps = {
+    _id: string | null,
+    enroll: number | null,
+    name: string,
+    gender: string | null,
+    dob: Date | null,
+    batch: string | null,
+    courses: CoursesProps[] | null,
+    semester: number | null,
+    profileImg: string,
+    isData: boolean
 }

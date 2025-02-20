@@ -26,74 +26,20 @@ const fetchStudentRecords = async (cid: string | null, attendanceRecords: { enro
   return newData;
 }
 
-const Home = () => {
+const TeacherDashboard = () => {
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
   const [prevDate, setPrevDate] = useState<{ day: string , isoDate: string } | null>(null);
-  const teacherData = useSelector((state: RootState) => state.teacherReducer);
   const [totalStudents, setTotalStudents] = useState(null);
   const [totalClasses, setTotalClasses] = useState(null);
   const [presentStudent, setPresentStudents] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [prevCourse, setPrevCourse] = useState<string | null>(null);
-  // const [studentRecords, setStudentRecords] = useState(null);
   const [attendanceRequests, setAttendanceRequests] = useState(null);
-  // const [attendanceRequests, setAttendanceRequests] = useState(
-  //   [
-  //     {
-  //       "enroll": 1001,
-  //       "name": "Aarav Sharma",
-  //       "batch": "B1",
-  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
-  //       "course": "Machine Learning",
-  //       "date" : "12/12/2024",
-  //       "reason": "Placement Drive",
-  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
-  //     },
-  //     {
-  //       "enroll": 1001,
-  //       "name": "Aarav Sharma",
-  //       "batch": "B1",
-  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
-  //       "course": "Machine Learning",
-  //       "date" : "12/12/2024",
-  //       "reason": "Placement Drive",
-  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
-  //     },
-  //     {
-  //       "enroll": 1001,
-  //       "name": "Aarav Sharma",
-  //       "batch": "B1",
-  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
-  //       "course": "Machine Learning",
-  //       "date" : "12/12/2024",
-  //       "reason": "Placement Drive",
-  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
-  //     },
-  //     {
-  //       "enroll": 1001,
-  //       "name": "Aarav Sharma",
-  //       "batch": "B1",
-  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
-  //       "course": "Machine Learning",
-  //       "date" : "12/12/2024",
-  //       "reason": "Placement Drive",
-  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
-  //     },
-  //     {
-  //       "enroll": 1001,
-  //       "name": "Aarav Sharma",
-  //       "batch": "B1",
-  //       "profileUrl": "https://wac-cdn.atlassian.com/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=2534",
-  //       "course": "Machine Learning",
-  //       "date" : "12/12/2024",
-  //       "reason": "Placement Drive",
-  //       "proof": "https://nimbusweb.me/wp-content/uploads/2023/05/Contractor-Agreement-791x1024.png"
-  //     },
-  //   ])
   const [announcements, setAnnouncements] = useState(null);
   const hasAnnouncementFetched = useRef(false);
   const hasAttendanceRequestsFetched = useRef(false);
-
+  
+  const teacherData = useSelector((state: RootState) => state.teacherReducer);
   const coursesArray = teacherData.courses;
 
   useEffect(() => {
@@ -137,8 +83,6 @@ const Home = () => {
     if (selectedDate.day && selectedCourse && (prevDate?.isoDate != selectedDate.isoDate || prevCourse != selectedCourse)) {
        const fetchData = async () => {
         const response = await getAttendanceByCourseDate(selectedCourse, selectedDate.isoDate);
-        // const studentRecs = await fetchStudentRecords(selectedCourse, response);
-        // setStudentRecords(studentRecs);
         setPresentStudents(response?.filter((record: any) => record.status).length || 0);
         setTotalStudents(response?.length || 0);
         setPrevCourse(selectedCourse);
@@ -154,7 +98,7 @@ const Home = () => {
         <div>
           <Header title="Dashboard" selectedDate={(value) => setSelectedDate(value)} selectedCourse={(value) => setSelectedCourse(value)} availableCourses={coursesArray} />
           <main className="p-10 flex flex-col gap-10">
-            <HomeCardGrid absent={Number((100 - presentStudent).toFixed(1))} classes={totalClasses} present={presentStudent} students={totalStudents} />
+            <HomeCardGrid absent={Number((100 - presentStudent).toFixed(1))} classes={totalClasses} present={presentStudent} students={totalStudents} userType="teacher"/>
             <div className="grid grid-cols-4 gap-10">
               <div className="col-span-2">
                 {announcements && teacherData.uid && coursesArray ? (
@@ -179,4 +123,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default TeacherDashboard

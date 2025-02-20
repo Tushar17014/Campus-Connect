@@ -10,6 +10,16 @@ export async function getAttendanceByCourseDate(cid: string | null, date: string
     }
 }
 
+export async function getAttendanceByCourseEnroll(cid: string | null, enroll: number | null) {
+    try{
+        const response = await axiosInstance.get(`/attendance/attendanceByCourseEnroll?cid=${cid}&enroll=${enroll}`);
+        return response.data;
+    } catch(err: any){
+        console.error(err.message);
+        return {};
+    }
+}
+
 export async function getAttendanceByCourse(cid: string | null) {
     try{
         const response = await axiosInstance.get(`/attendance/attendanceByCourse?cid=${cid}`);

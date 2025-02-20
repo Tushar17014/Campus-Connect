@@ -1,15 +1,23 @@
 import { BookText, LayoutDashboard } from "lucide-react"
 
-export const sidebarList = [
+export const teacherSideBarList = [
     {
         title: "Dashboard",
-        url: "/",
+        url: "/teacher",
         icon: LayoutDashboard,
     },
     {
         title: "Lectures",
-        url: "/lectures",
+        url: "/teacher/lectures",
         icon: BookText,
+    },
+]
+
+export const studentSideBarList = [
+    {
+        title: "Dashboard",
+        url: "/student",
+        icon: LayoutDashboard,
     },
 ]
 

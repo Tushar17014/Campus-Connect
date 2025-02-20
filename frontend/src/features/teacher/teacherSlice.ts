@@ -5,8 +5,7 @@ const initialState: TeacherSliceProps = {
     _id: null,
     uid: null,
     courses: null,
-    firstName: "",
-    lastName: "",
+    name: "",
     profileImg: "",
     isData: false
 }
@@ -15,21 +14,20 @@ export const teacherSlice = createSlice({
     name: 'teacher',
     initialState,
     reducers: {
-        setUserData: (state, action) => {
+        setTeacherData: (state, action) => {
             try {
                 state._id = action.payload._id,
                 state.uid = action.payload.uid;
                 state.courses = action.payload.courses;
-                state.firstName = action.payload.firstName;
-                state.lastName = action.payload.lastName;
+                state.name = action.payload.name;
                 state.profileImg = action.payload.profileImg;
                 state.isData = true;
             } catch (error: any) {
-                console.log("Error in setUserData Redux: ", error);
+                console.log("Error in setTeacherData Redux: ", error);
             }
         }
     }
 });
 
-export const { setUserData } = teacherSlice.actions;
+export const { setTeacherData } = teacherSlice.actions;
 export default teacherSlice.reducer;
