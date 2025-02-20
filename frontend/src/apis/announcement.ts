@@ -10,10 +10,10 @@ export async function getAnnouncementByTeacher(uid: string | null) {
     }
 }
 
-export async function makeAnnouncement(title: string, message: string, uid: string) {
+export async function makeAnnouncement(title: string, message: string, uid: string, cid: string) {
     try{
         const response = await axiosInstance.post(`/announcements/makeAnnouncement`, {
-            title, message, uid
+            title, message, uid, cid
         });
         return response.data;
     } catch(err: any){

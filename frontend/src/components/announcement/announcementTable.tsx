@@ -42,6 +42,7 @@ const AnnouncementTable = ({ announcementData }: AnnouncementTablePropsWithData)
                     <TableHeader>
                         <TableRow>
                             <TableHead>Date</TableHead>
+                            <TableHead>Course</TableHead>
                             <TableHead>Title</TableHead>
                             <TableHead>Message</TableHead>
                             <TableHead className="w-10 text-right">Action</TableHead>
@@ -51,7 +52,8 @@ const AnnouncementTable = ({ announcementData }: AnnouncementTablePropsWithData)
                         {announcements.map((item, idx) => (
                             <TableRow key={idx} className="h-14">
                                 <TableCell className="font-medium max-w-14 truncate">{formatToddmmyy(item.createdAt)}</TableCell>
-                                <TableCell className="truncate max-w-24">{item.title}</TableCell>
+                                <TableCell className="truncate max-w-14">{item.course.name}</TableCell>
+                                <TableCell className="truncate max-w-20">{item.title}</TableCell>
                                 <Dialog>
                                     <DialogTrigger asChild>
                                         <TableCell className="max-w-40 truncate cursor-pointer">{item.message}</TableCell>
@@ -60,7 +62,8 @@ const AnnouncementTable = ({ announcementData }: AnnouncementTablePropsWithData)
                                         <DialogHeader>
                                             <DialogTitle>{item.title}</DialogTitle>
                                             <DialogDescription>
-                                                {formatToddmmyy(item.createdAt)}
+                                                <p>{item.course.name}</p>
+                                                <p>{formatToddmmyy(item.createdAt)}</p>
                                             </DialogDescription>
                                         </DialogHeader>
                                         {item.message}
@@ -78,7 +81,7 @@ const AnnouncementTable = ({ announcementData }: AnnouncementTablePropsWithData)
                                         </DialogHeader>
                                         <DialogFooter>
                                             <DialogClose className="flex gap-8">
-                                                <Button onClick={() => {DeleteAnnouncementRecord(item._id)}}>Yes</Button>
+                                                <Button onClick={() => { DeleteAnnouncementRecord(item._id) }}>Yes</Button>
                                                 <Button>No</Button>
                                             </DialogClose>
                                         </DialogFooter>

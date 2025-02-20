@@ -23,6 +23,7 @@ declare type HomeCardGridProps = {
 
 declare type AnnouncementTableProps = {
     _id: string,
+    course: CoursesProps,
     title: string,
     createdAt: Date,
     message: string,

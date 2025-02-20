@@ -157,10 +157,10 @@ const Home = () => {
             <HomeCardGrid absent={Number((100 - presentStudent).toFixed(1))} classes={totalClasses} present={presentStudent} students={totalStudents} />
             <div className="grid grid-cols-4 gap-10">
               <div className="col-span-2">
-                {announcements && teacherData.uid ? (
-                  <AnnouncementsWidget announcementData={announcements} uid={teacherData.uid} />
+                {announcements && teacherData.uid && coursesArray ? (
+                  <AnnouncementsWidget announcementData={announcements} uid={teacherData.uid} availableCourses={coursesArray} />
                 ) : (
-                  <Loader />
+                  <Loader className='size-6 text-red-700 animate-spin' />
                 )}
               </div>
               <div className="col-span-2">

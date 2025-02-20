@@ -7,10 +7,11 @@ import { useState } from "react"
 
 interface AnnouncementWidgetsPropsWithData {
     announcementData: AnnouncementTableProps[],
-    uid: string;
+    uid: string,
+    availableCourses?: { cid: string, name: string }[];
 }
 
-const AnnouncementsWidget = ({announcementData, uid} : AnnouncementWidgetsPropsWithData) => {
+const AnnouncementsWidget = ({announcementData, uid, availableCourses} : AnnouncementWidgetsPropsWithData) => {
     const [announcements, setAnnouncements] = useState(announcementData);
 
     const handleNewAnnouncement = (newAnnouncement: AnnouncementTableProps) => {
@@ -21,7 +22,7 @@ const AnnouncementsWidget = ({announcementData, uid} : AnnouncementWidgetsPropsW
             <CardHeader >
                 <div className="flex justify-between items-center">
                     <h3 className="text-xl font-semibold">Announcements</h3>
-                    <NewAnnouncementDialog uid={uid} onNewAnnouncement={handleNewAnnouncement}/>
+                    <NewAnnouncementDialog uid={uid} onNewAnnouncement={handleNewAnnouncement} availableCourses={availableCourses}/>
                 </div>
             </CardHeader>
 
