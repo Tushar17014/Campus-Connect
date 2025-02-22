@@ -11,6 +11,7 @@ import Lectures from "./pages/Teacher/lectures/lectures"
 import StudentDashboard from "./pages/Student/dashboard/dashboard"
 import CheckAttendance from "./pages/Student/checkAttendance/checkAttendance"
 import CheckCourseAttendance from "./pages/Student/checkAttendance/checkCourseAttendance"
+import RequestAttendance from "./pages/Student/requestAttendance/requestAttendance"
 function App() {
   useEffect(() => {
     document.title = websiteTitle;
@@ -33,6 +34,7 @@ function App() {
             <Route path="/student" element={<StudentDashboard />} />
             <Route path="/student/check-attendance" element={<CheckAttendance />} />
             <Route path="/student/check-attendance/:cid" element={<CheckCourseAttendance />} />
+            <Route path="/student/request-attendance" element={<RequestAttendance />} />
           </Route>
             {/* <Route path="*" element={<Redirect />} /> */}
         </Routes>

@@ -6,19 +6,37 @@ import { updateAttendance } from "./attendance.controller.js"
 
 export async function createAttendanceRequest(req, res) {
     try {
-        const { enroll, uid, cid, date, reason } = req.body;
+        const { enroll, cid, date, reason } = req.body;
 
         if (!req.file) {
             return res.status(400).json({ error: "Proof image is required" });
         }
         const proof = req.file.buffer;
-        const CourseData = await Courses.findOne({ cid });
+        const CourseData = await Courses.findOne({ cid }).populate("teacher");
         if (!CourseData) return res.status(404).json({ error: "Course not found" });
         const course = CourseData._id;
+        const uid = CourseData.teacher.uid;
 
         const data = await AttendanceRequests.create({ enroll, uid, course, date, reason, proof: proof });
 
-        return res.status(200).json(data);
+        const record = await AttendanceRequests.findById(data._id).populate("course");
+        const imageBase64 = record.proof ? `data:image/png;base64,${record.proof.toString("base64")}` : "";
+        const studentData = await StudentData.findOne({ enroll: record.enroll });
+
+        const output = {
+            _id: record._id,
+            name: studentData.name,
+            enroll: record.enroll,
+            profileUrl: studentData.profileUrl,
+            batch: studentData.batch,
+            course: record.course,
+            date: record.date,
+            reason: record.reason,
+            proof: imageBase64,
+            status: record.status
+        }
+
+        return res.status(200).json(output);
     } catch (err) {
         console.error(err.message);
     }
@@ -54,14 +72,54 @@ export async function handleAttendanceRequest(req, res, next) {
         if (status == "approved") {
             await AttendanceRequests.updateOne({ _id: attendanceRequestId }, { status });
             const output = await updateAttendance(enroll, cid, date);
-            return res.status(200).json({message: "Approved", ...output});
+            return res.status(200).json({ message: "Approved", ...output });
         }
-        
+
         await AttendanceRequests.updateOne({ _id: attendanceRequestId }, { status: "denied" });
-        if(status == "denied"){
+        if (status == "denied") {
             return res.status(200).json({ message: "Denied" });
         }
-        return res.status(200).json({message: "Fulfilled"});
+        return res.status(200).json({ message: "Fulfilled" });
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
+export async function checkAttendanceRequestForStudent(req, res, next) {
+    try {
+        const { enroll, cid, date } = req.body;
+
+        const courseData = await Courses.findOne({ cid });
+        const course_id = courseData?._id;
+
+        const AttendanceRequestData = await AttendanceRequests.findOne({ enroll, date, course: course_id });
+
+        return res.status(200).json(AttendanceRequestData ? AttendanceRequestData : false);
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
+export async function getAttendanceRequestsForStudentByEnroll(req, res) {
+    try {
+        const data = await AttendanceRequests.find({ enroll: req.query.enroll }).populate("course");
+        let output = await Promise.all(data.map(async (record) => {
+            const imageBase64 = record.proof ? `data:image/png;base64,${record.proof.toString("base64")}` : "";
+            const studentData = await StudentData.findOne({ enroll: record.enroll });
+            return {
+                _id: record._id,
+                name: studentData.name,
+                enroll: record.enroll,
+                profileUrl: studentData.profileUrl,
+                batch: studentData.batch,
+                course: record.course,
+                date: record.date,
+                reason: record.reason,
+                proof: imageBase64,
+                status: record.status
+            };
+        }));
+        return res.status(200).json(output);
     } catch (err) {
         console.error(err.message);
     }

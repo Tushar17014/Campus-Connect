@@ -50,9 +50,9 @@ const Lectures = () => {
     const formData = new FormData();
     formData.append('audio', uploadedAudio);
   }
-  
+
   useEffect(() => {
-    if(groupByCourse && lectureSummariesRecords.length > 0){
+    if (groupByCourse && lectureSummariesRecords.length > 0) {
       setFilteredLectures(groupByCourse === "All" ? lectureSummariesRecords : lectureSummariesRecords.filter((lecture: any) => lecture.course.cid == groupByCourse));
     }
   }, [groupByCourse, lectureSummariesRecords]);
@@ -88,7 +88,7 @@ const Lectures = () => {
             <CardHeader >
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-semibold">Lecture Summaries</h3>
-                <CourseSelector availableCourses={availableCourses} selectedCourse={(value) => setGroupByCourse(value)} selectAllOption={true}/>
+                <CourseSelector availableCourses={availableCourses} selectedCourse={(value) => setGroupByCourse(value)} selectAllOption={true} />
               </div>
             </CardHeader>
             <Separator className="mb-5" />

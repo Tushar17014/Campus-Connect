@@ -89,7 +89,8 @@ declare type AttendanceRequestProps = {
     course: CoursesProps,
     date: Date,
     reason: string,
-    proof: string
+    proof: string,
+    status: string
 }
 
 declare type AttendanceRequestTableProps = {

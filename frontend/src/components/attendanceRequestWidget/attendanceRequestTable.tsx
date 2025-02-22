@@ -12,13 +12,13 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTrigger,
+    DialogTitle
 } from "@/components/ui/dialog"
 import { AttendanceRequestTableProps } from "@/types"
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Loader } from "lucide-react"
-import { DialogTitle } from "@radix-ui/react-dialog"
 import { formatToddmmyy } from "@/lib/utils"
 import { handleAttendanceRequest } from "@/apis/attendanceRequest"
 import { useToast } from "@/hooks/use-toast"
