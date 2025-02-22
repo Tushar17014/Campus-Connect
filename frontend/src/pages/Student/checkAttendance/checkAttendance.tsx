@@ -2,7 +2,8 @@ import { getAttendanceByEnroll } from "@/apis/attendance";
 import Header from "@/components/header"
 import MainLoader from "@/components/mainLoader";
 import StudentAllCoursesAttendanceTable from "@/components/studentAllCoursesAttendanceTable"
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { RootState } from "@/store/store";
 import { StudentAllCoursesAttendanceProps, StudentAttendanceByEnrollData } from "@/types";
 import { useEffect, useRef, useState } from "react"
@@ -40,7 +41,13 @@ const CheckAttendance = () => {
             <Header title="Check Attendance" />
             {allCourseAttendance ? (
                 <div>
-                    <Card className="bg-mainbg max-h-[440px] m-5 overflow-y-hidden pt-10 hover:overflow-y-auto custom-scrollbar">
+                    <Card className="bg-mainbg max-h-[440px] m-5 overflow-y-hidden hover:overflow-y-auto custom-scrollbar">
+                        <CardHeader >
+                            <div className="flex justify-between items-center">
+                                <h3 className="text-xl font-semibold">Your Attendance</h3>
+                            </div>
+                        </CardHeader>
+                        <Separator className="mb-5" />
                         <CardContent>
                             <StudentAllCoursesAttendanceTable AllCourseAttendance={allCourseAttendance} />
                         </CardContent>
