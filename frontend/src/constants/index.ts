@@ -1,4 +1,4 @@
-import { BookText, LayoutDashboard } from "lucide-react"
+import { BookText, Hand, LayoutDashboard } from "lucide-react"
 
 export const teacherSideBarList = [
     {
@@ -18,6 +18,11 @@ export const studentSideBarList = [
         title: "Dashboard",
         url: "/student",
         icon: LayoutDashboard,
+    },
+    {
+        title: "Check Attendance",
+        url: "/student/check-attendance",
+        icon: Hand,
     },
 ]
 

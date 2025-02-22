@@ -29,3 +29,13 @@ export async function getAttendanceByCourse(cid: string | null) {
         return {};
     }
 }
+
+export async function getAttendanceByEnroll(enroll: number | null) {
+    try{
+        const response = await axiosInstance.get(`/attendance/attendanceByEnroll?enroll=${enroll}`);
+        return response.data;
+    } catch(err: any){
+        console.error(err.message);
+        return {};
+    }
+}

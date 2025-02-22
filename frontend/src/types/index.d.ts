@@ -125,3 +125,22 @@ declare type StudentSliceProps = {
     profileImg: string,
     isData: boolean
 }
+
+declare type StudentAttendanceRecordsProps = {
+    date: Date,
+    status: boolean,
+    _id: string
+}
+
+declare type StudentAttendanceByEnrollData = {
+    course: CoursesProps,
+    attendanceRecords: StudentAttendanceRecordsProps[],
+    _id: string
+}
+
+declare type StudentAllCoursesAttendanceProps = {
+    course: CoursesProps,
+    presentClasses: number | 0,
+    totalClasses: number | 0,
+    attendancePercentage: number | 0
+}

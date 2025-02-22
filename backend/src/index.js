@@ -12,6 +12,7 @@ import studentRoute from "./routes/student.route.js"
 import announcementRoute from "./routes/announcement.route.js"
 import attendanceRequestsRoute from "./routes/attendanceRequests.route.js"
 import lectureRoutes from "./routes/lectures.route.js"
+import courseRoutes from "./routes/course.route.js"
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/students", studentRoute);
 app.use("/api/announcements", announcementRoute);
 app.use("/api/attendanceRequests", attendanceRequestsRoute);
 app.use("/api/lectures", lectureRoutes);
+app.use("/api/courses", courseRoutes);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

@@ -13,7 +13,7 @@ export const updateAttendance = async (enroll, cid, date) => {
                 rec.date.toISOString() === date
             );
             if (attendanceRecord) {
-                if(!attendanceRecord.status){
+                if (!attendanceRecord.status) {
                     attendanceRecord.status = true;
                     flag = true;
                 }
@@ -94,9 +94,11 @@ export async function getAttendanceByCourseEnroll(req, res, next) {
             if (x.enroll == req.query.enroll) {
                 for (let ele in x.courses) {
                     if (x.courses[ele].cid == req.query.cid) {
-                        newdata = x.courses[ele].attendanceRecords;
+                        newdata = x.courses[ele].attendanceRecords.sort((a, b) =>
+                            new Date(b.date) - new Date(a.date)
+                        );
                         break;
-                    }
+                    }   
                 }
             }
         })
@@ -111,6 +113,15 @@ export async function updateAttendanceByDate(req, res, next) {
         const { enroll, cid, date } = req.body;
         const output = await updateAttendance(enroll, cid, date);
         return res.status(200).json(output);
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
+export async function getAttendanceByEnroll(req, res, next) {
+    try {
+        const data = await Attendance.findOne({ enroll: req.query.enroll }).populate('courses.course');
+        return res.status(200).json(data);
     } catch (err) {
         console.error(err.message);
     }

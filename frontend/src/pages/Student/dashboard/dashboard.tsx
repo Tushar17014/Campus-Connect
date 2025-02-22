@@ -32,7 +32,6 @@ const StudentDashboard = () => {
         response?.forEach((obj: any) => {
           if (obj.isActive) announcementData.push(obj);
         })
-        console.log(announcementData);
         setAnnouncements(announcementData);
       };
       fetchAnnouncements();

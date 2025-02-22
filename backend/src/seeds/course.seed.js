@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 import { config } from "dotenv";
 import { Courses } from "../models/courses.model.js";
 import { TeacherData } from "../models/TeacherData.model.js";
+import { Attendance } from "../models/attendance.model.js";
 
 config();
 const updateTeacherField = async () => {
@@ -34,4 +35,30 @@ const updateTeacherField = async () => {
     }
 };
 
-updateTeacherField();
+const updateCourseRecord = async () => {
+    await mongoose.connect(process.env.MONGODB_URI);
+    try {
+        const students = await Attendance.find();
+
+        for (let student of students) {
+            for (let course of student.courses) {
+                const matchedCourse = await Courses.findOne({ cid: course.cid });
+
+                if (matchedCourse) {
+                    course.course = matchedCourse._id; // Assign ObjectId
+                    delete course.cid; // Remove old field
+                }
+            }
+
+            await student.save(); // Save updated student record
+        }
+
+        console.log("Update completed!");
+        mongoose.disconnect();
+    } catch (err) {
+        console.error("Error updating course field:", err);
+        mongoose.disconnect();
+    }
+}
+
+updateCourseRecord();

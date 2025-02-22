@@ -9,6 +9,8 @@ import { useEffect } from "react"
 import { websiteTitle } from "./constants"
 import Lectures from "./pages/Teacher/lectures/lectures"
 import StudentDashboard from "./pages/Student/dashboard/dashboard"
+import CheckAttendance from "./pages/Student/checkAttendance/checkAttendance"
+import CheckCourseAttendance from "./pages/Student/checkAttendance/checkCourseAttendance"
 function App() {
   useEffect(() => {
     document.title = websiteTitle;
@@ -29,8 +31,10 @@ function App() {
             <Route path="/teacher/lectures" element={<Lectures />} />
 
             <Route path="/student" element={<StudentDashboard />} />
+            <Route path="/student/check-attendance" element={<CheckAttendance />} />
+            <Route path="/student/check-attendance/:cid" element={<CheckCourseAttendance />} />
           </Route>
-            <Route path="*" element={<Redirect />} />
+            {/* <Route path="*" element={<Redirect />} /> */}
         </Routes>
       </BrowserRouter>
     </>
