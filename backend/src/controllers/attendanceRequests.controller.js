@@ -2,7 +2,8 @@ import { AttendanceRequests } from "../models/attendanceRequests.model.js";
 import { Courses } from "../models/courses.model.js";
 import { StudentData } from "../models/studentData.model.js";
 import { TeacherData } from "../models/TeacherData.model.js";
-import { updateAttendance } from "./attendance.controller.js"
+import { updateAttendance } from "./attendance.controller.js";
+import { sendNotification } from "./notification.controller.js";
 
 export async function createAttendanceRequest(req, res) {
     try {
@@ -69,14 +70,30 @@ export async function getAttendanceRequestsForTeacherByUid(req, res) {
 export async function handleAttendanceRequest(req, res, next) {
     try {
         const { enroll, cid, date, status, attendanceRequestId } = req.body;
+        let canSendNotification = true;
+
+        const studentData = await StudentData.findOne({ enroll });
+        if (!studentData || !studentData.expoPushToken) {
+            canSendNotification = false;
+        }
+        
+        let expoPushToken = "";
+        if(canSendNotification) expoPushToken = studentData.expoPushToken; 
+
         if (status == "approved") {
             await AttendanceRequests.updateOne({ _id: attendanceRequestId }, { status });
             const output = await updateAttendance(enroll, cid, date);
+
+            if(canSendNotification) await sendNotification(expoPushToken, "Attendance Approved", "Your attendance request has been approved!");
+
             return res.status(200).json({ message: "Approved", ...output });
         }
 
         await AttendanceRequests.updateOne({ _id: attendanceRequestId }, { status: "denied" });
         if (status == "denied") {
+
+            if(canSendNotification) await sendNotification(expoPushToken, "Attendance Denied", "Your attendance request has been denied!");
+
             return res.status(200).json({ message: "Denied" });
         }
         return res.status(200).json({ message: "Fulfilled" });
