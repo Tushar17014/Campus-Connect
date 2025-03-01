@@ -29,6 +29,7 @@ dist-ssr
 cache
 __pycache__
 ML/lecture-summarizer/data
+ML/face-recognition/data
 
 #application
 node_modules/
