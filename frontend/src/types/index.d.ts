@@ -111,6 +111,17 @@ declare type LectureSummariesTableProps = {
     data: LectureSummariesProps[] | null;
 }
 
+declare type ConfirmAttendanceTableProps = {
+    enroll: number,
+    name: string,
+    batch: string,
+    status: boolean
+}
+
+declare type MakrAttendanceData = {
+    enroll: number,
+    status: boolean
+}
 
 // Student
 

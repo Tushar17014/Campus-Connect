@@ -5,9 +5,13 @@ import { useEffect, useState } from "react"
 
 const HomeCardGrid = ({absent, classes, present, students, userType, studentPresent, studentPresentCount, studentAbsentCount, studentClasses} : HomeCardGridProps) => {
     const [HomeCardData, setHomeCardData] = useState<HomeCardProps[] | null>(null);
-
     useEffect(() => {
-        if(userType == "teacher"){
+        if(userType == "teacher" && present != undefined && students != undefined){
+            let presentPercent = Number(((present / students) * 100).toFixed(1));
+            if(students == 0){
+                presentPercent = 0;
+            }
+            let absentPercent = Number((100 - presentPercent).toFixed(1));
             setHomeCardData([
                 {
                     content: `${students}`,
@@ -16,13 +20,13 @@ const HomeCardGrid = ({absent, classes, present, students, userType, studentPres
                     style: "text-blue-500",
                 },
                 {
-                    content: `${present}%`,
+                    content: `${presentPercent}%`,
                     title: "Present",
                     Icon: TrendingUp,
                     style: "text-green-500",
                 },
                 {
-                    content: `${absent}%`,
+                    content: `${absentPercent}%`,
                     title: "Absent",
                     Icon: TrendingDown,
                     style: "text-red-500",

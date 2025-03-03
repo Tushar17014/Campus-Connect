@@ -12,6 +12,7 @@ import StudentDashboard from "./pages/Student/dashboard/dashboard"
 import CheckAttendance from "./pages/Student/checkAttendance/checkAttendance"
 import CheckCourseAttendance from "./pages/Student/checkAttendance/checkCourseAttendance"
 import RequestAttendance from "./pages/Student/requestAttendance/requestAttendance"
+import TakeAttendance from "./pages/Teacher/takeAttendance/takeAttendance"
 function App() {
   useEffect(() => {
     document.title = websiteTitle;
@@ -30,13 +31,14 @@ function App() {
           }>
             <Route path="/teacher" element={<TeacherDashboard />} />
             <Route path="/teacher/lectures" element={<Lectures />} />
+            <Route path="/teacher/take-attendance" element={<TakeAttendance />} />
 
             <Route path="/student" element={<StudentDashboard />} />
             <Route path="/student/check-attendance" element={<CheckAttendance />} />
             <Route path="/student/check-attendance/:cid" element={<CheckCourseAttendance />} />
             <Route path="/student/request-attendance" element={<RequestAttendance />} />
           </Route>
-            {/* <Route path="*" element={<Redirect />} /> */}
+            <Route path="*" element={<Redirect />} />
         </Routes>
       </BrowserRouter>
     </>

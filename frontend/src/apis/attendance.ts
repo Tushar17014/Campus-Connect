@@ -1,4 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
+import { MakrAttendanceData } from "@/types";
 
 export async function getAttendanceByCourseDate(cid: string | null, date: string) {
     try{
@@ -35,6 +36,30 @@ export async function getAttendanceByEnroll(enroll: number | null) {
         const response = await axiosInstance.get(`/attendance/attendanceByEnroll?enroll=${enroll}`);
         return response.data;
     } catch(err: any){
+        console.error(err.message);
+        return {};
+    }
+}
+
+export async function takeAttendance(data: FormData){
+    try{
+        const response = await axiosInstance.post(`/attendance/takeAttendance`, data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+        return response.data;
+    } catch(err: any){
+        console.error(err.message);
+        return {};
+    }
+}
+
+export async function markAttendance(data: MakrAttendanceData[], cid : string){
+    try{
+        const response = await axiosInstance.post(`/attendance/markAttendance`, {attendanceData: data, cid: cid});
+        return response;
+    } catch(err : any){
         console.error(err.message);
         return {};
     }

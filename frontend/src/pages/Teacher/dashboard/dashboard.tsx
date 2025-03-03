@@ -1,6 +1,5 @@
 import { getAnnouncementByTeacher } from "@/apis/announcement";
 import { getAttendanceByCourse, getAttendanceByCourseDate } from "@/apis/attendance";
-import { getStudentByCourse } from "@/apis/student";
 import AnnouncementsWidget from "@/components/announcement/announcementsWidget";
 import Header from "@/components/header"
 import HomeCardGrid from "@/components/homeCardGrid"
@@ -13,18 +12,6 @@ import { Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { getAttendanceRequestsForTeacherByUid } from "@/apis/attendanceRequest";
-
-
-const fetchStudentRecords = async (cid: string | null, attendanceRecords: { enroll: number, status: boolean }[]) => {
-  const studentByCourse = await getStudentByCourse(cid);
-  let newData: any = [];
-  attendanceRecords?.forEach((rec) => {
-    let d = studentByCourse.find((student: any) => student.enroll == rec.enroll);
-    d = { ...d, status: rec.status };
-    newData.push(d);
-  })
-  return newData;
-}
 
 const TeacherDashboard = () => {
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
@@ -98,7 +85,7 @@ const TeacherDashboard = () => {
         <div>
           <Header title="Dashboard" selectedDate={(value) => setSelectedDate(value)} selectedCourse={(value) => setSelectedCourse(value)} availableCourses={coursesArray} />
           <main className="p-10 flex flex-col gap-10">
-            <HomeCardGrid absent={Number((100 - presentStudent).toFixed(1))} classes={totalClasses} present={presentStudent} students={totalStudents} userType="teacher"/>
+            <HomeCardGrid classes={totalClasses} present={presentStudent} students={totalStudents} userType="teacher"/>
             <div className="grid grid-cols-4 gap-10">
               <div className="col-span-2">
                 {announcements && teacherData.uid && coursesArray ? (
@@ -108,7 +95,11 @@ const TeacherDashboard = () => {
                 )}
               </div>
               <div className="col-span-2">
-                <PieChartComponent present={presentStudent} />
+                {totalStudents == 0 ? (
+                  <PieChartComponent present={0}/>
+                ) : (
+                  <PieChartComponent present={Number(((presentStudent / totalStudents) * 100).toFixed(1))}/>
+                )}
               </div>
               <div className="col-span-4">
                 <AttendanceRequestWidget data={attendanceRequests} />
