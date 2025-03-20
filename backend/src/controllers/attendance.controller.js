@@ -1,4 +1,5 @@
 import { fileURLToPath } from "url";
+import { v4 as uuidv4 } from "uuid";
 import { Attendance } from "../models/attendance.model.js";
 import { AttendanceRequests } from "../models/attendanceRequests.model.js";
 import path from "path";
@@ -6,6 +7,7 @@ import fs from "fs";
 import FormData from "form-data";
 import axios from "axios";
 import { Courses } from "../models/courses.model.js";
+import { TakeAttendanceRequests } from "../models/takeAttendanceRequests.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -136,44 +138,89 @@ export async function getAttendanceByEnroll(req, res, next) {
     }
 }
 
+export async function getTakeAttendanceRequestStatus(req, res, next) {
+    try {
+        const { requestId } = req.query
+        const data = await TakeAttendanceRequests.findOne({ requestId });
+        return res.status(200).json(data);
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
 export async function takeAttendance(req, res) {
     try {
-        if (!req.file) {
+        if (!req.files || req.files.length == 0) {
             console.error('No file received');
             return res.status(400).send('No file uploaded');
         }
-        const targetDirectory = path.resolve(__dirname, '../../')
-        const imagePath = path.join(targetDirectory, req.file.path);
 
-        const formData = new FormData();
-        formData.append('image', fs.createReadStream(imagePath));
-        const response = await axios.post(`${process.env.FACE_RECOGNITON_BASE_URL}/sendStudentAttendance`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            }
+        const requestId = uuidv4();
+        const targetDirectory = path.resolve(__dirname, '../../')
+        const imagePaths = req.files.map(file => path.join(targetDirectory, file.path));
+
+        const newRequest = new TakeAttendanceRequests({
+            requestId,
+            enrolls: [],
+            cid: req.body.cid,
+            status: "pending",
         });
 
-        fs.unlinkSync(imagePath);
+        await newRequest.save();
 
-        return res.status(200).json(response?.data);
+        processAttendance(requestId, imagePaths);
+
+        return res.status(200).json({ requestId });
+
+    } catch (error) {
+        console.error('Error Taking Attendance:', error);
+        res.status(500).send('Error Taking Attendance');
+    }
+}
+async function processAttendance(requestId, imagePaths) {
+    try {
+        await TakeAttendanceRequests.findOneAndUpdate({ requestId }, { status: "processing" });
+
+        let allEnrolls = new Set();
+
+        for (const imagePath in imagePaths) {
+            try {
+                const formData = new FormData();
+                formData.append('image', fs.createReadStream(imagePaths[imagePath]));
+                const response = await axios.post(`${process.env.FACE_RECOGNITON_BASE_URL}/sendStudentAttendance`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    }
+                });
+
+                response.data.forEach((enroll) => allEnrolls.add(enroll));
+
+            } catch (error) {
+                console.error('Error processing image:', imagePaths[imagePath], error);
+            } finally {
+                fs.unlinkSync(imagePaths[imagePath]);
+            }
+        }
+
+        await TakeAttendanceRequests.findOneAndUpdate({ requestId }, { enrolls: [...allEnrolls], status: "completed" });
 
     } catch (error) {
         console.error('Error processing image:', error);
-        res.status(500).send('Error processing image');
+        await TakeAttendanceRequests.findOneAndUpdate({ requestId }, { status: "failed" });
     }
 }
 
 export async function markSingleAttendance(enroll, cid, status, today) {
     try {
         const student = await Attendance.findOne({ enroll });
-        const course = await Courses.findOne({cid: cid});
+        const course = await Courses.findOne({ cid: cid });
         const course_id = course._id;
         if (!student) {
             const newStudent = new Attendance({
                 enroll: enroll,
                 courses: [
                     {
-                        cid: cid, 
+                        cid: cid,
                         attendanceRecords: [
                             { date: today, status: status }
                         ],

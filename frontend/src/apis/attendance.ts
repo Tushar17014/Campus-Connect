@@ -64,3 +64,13 @@ export async function markAttendance(data: MakrAttendanceData[], cid : string){
         return {};
     }
 }
+
+export async function takeAttendanceRequestStatus(requestId: string){
+    try{
+        const response = await axiosInstance.get(`/attendance/takeAttendanceRequestStatus?requestId=${requestId}`);
+        return response.data;
+    } catch(err : any){
+        console.error(err.message);
+        return {};
+    }
+}

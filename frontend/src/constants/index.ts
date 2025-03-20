@@ -37,3 +37,5 @@ export const studentSideBarList = [
 ]
 
 export const websiteTitle = "Campus Connect"
+
+export const takeAttendanceRequestCheckInterval = 10000

@@ -1,4 +1,4 @@
-import { takeAttendance } from "@/apis/attendance";
+import { takeAttendance, takeAttendanceRequestStatus } from "@/apis/attendance";
 import { getStudentByCourse } from "@/apis/student";
 import BatchSelector from "@/components/batchSelector";
 import ConfirmAttendanceTable from "@/components/confirmAttendanceTable";
@@ -9,6 +9,7 @@ import MultiImageUploadComponent from "@/components/multiImageUpload";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Label } from "@/components/ui/label";
+import { takeAttendanceRequestCheckInterval } from "@/constants";
 import { RootState } from "@/store/store";
 import { ConfirmAttendanceTableProps } from "@/types";
 import React, { useEffect, useState } from "react";
@@ -25,10 +26,55 @@ const TakeAttendance = () => {
     const [confirmAttendanceRecords, setConfirmAttendacneRecords] = useState<ConfirmAttendanceTableProps[] | null>(null);
     const [attendanceLoading, setAttendanceLoading] = useState(false);
     const [selectedBatches, setSelectedBatches] = useState<string[]>([]);
+    const [presentEnrolls, setPresentEnrolls] = useState<number[]>([]);
 
     const teacherData = useSelector((state: RootState) => state.teacherReducer);
 
     const availableCourses = teacherData.courses;
+
+    useEffect(() => {
+        const requestId = localStorage.getItem("attendanceRequestId");
+        if (requestId) {
+            const getRequest = async () => {
+                const request = await takeAttendanceRequestStatus(requestId);
+                if (request.status == "completed") {
+                    setAttendanceLoading(false);
+                    setPresentEnrolls([...request.enrolls]);
+                }
+                else if (request.status == "processing" || request.status == "pending") {
+                    setAttendanceLoading(true);
+                    setTimeout(getRequest, takeAttendanceRequestCheckInterval);
+                }
+                else {
+                    window.location.reload();
+                }
+            };
+            getRequest();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (presentEnrolls.length > 0) {
+            const fetchConfirmStudents = async () => {
+                let temp: any = [];
+
+                const allStudents = await getStudentByCourse(selectedCourse);
+                allStudents.forEach((obj: any) => {
+                    if (presentEnrolls?.includes(obj.enroll)) {
+                        temp.push({ enroll: obj.enroll, name: obj.name, batch: obj.batch, status: true });
+                    }
+                    else {
+                        temp.push({ enroll: obj.enroll, name: obj.name, batch: obj.batch, status: false });
+                    }
+                })
+
+                setConfirmAttendacneRecords(temp);
+                setPageTitle("Confirm Attendance")
+            };
+            fetchConfirmStudents();
+        }
+    }, [presentEnrolls]);
+
 
     useEffect(() => {
         if (!selectedCourse && teacherData?.courses) {
@@ -42,35 +88,37 @@ const TakeAttendance = () => {
             alert("No Image");
             return;
         }
-        setAttendanceLoading(true);
-        try {
-            const allStudents = await getStudentByCourse(selectedCourse);
-            let availableEnrolls = new Set<number>();
-            for(const uploadedImage of uploadedImages){
+        if (selectedCourse) {
+            try {
                 const formData = new FormData();
-                formData.append('image', uploadedImage);
-                const response : number[] = await takeAttendance(formData);
-                response.forEach((enroll) => availableEnrolls.add(enroll));
+
+                uploadedImages.forEach((image) => formData.append("image", image));
+                formData.append('cid', selectedCourse);
+
+                const response = await takeAttendance(formData);
+
+                if (response && response.requestId) {
+                    localStorage.setItem("attendanceRequestId", response.requestId);
+                    const getRequest = async () => {
+                        const request = await takeAttendanceRequestStatus(response.requestId);
+                        if (request.status == "completed") {
+                            setAttendanceLoading(false);
+                            setPresentEnrolls([...request.enrolls]);
+                        }
+                        else if (request.status == "processing" || request.status == "pending") {
+                            setAttendanceLoading(true);
+                            setTimeout(getRequest, takeAttendanceRequestCheckInterval);
+                        }
+                        else {
+                            window.location.reload();
+                        }
+                    };
+                    getRequest();
+                }
+
+            } catch (error: any) {
+                console.error("Error uploading Image: ", error.message);
             }
-
-            let temp: any = [];
-            const presentEnrolls = [...availableEnrolls];
-            allStudents.forEach((obj: any) => {
-                if (presentEnrolls?.includes(obj.enroll)) {
-                    temp.push({ enroll: obj.enroll, name: obj.name, batch: obj.batch, status: true });
-                }
-                else {
-                    temp.push({ enroll: obj.enroll, name: obj.name, batch: obj.batch, status: false });
-                }
-            })
-
-            setConfirmAttendacneRecords(temp);
-            setPageTitle("Confirm Attendance")
-
-        } catch (error: any) {
-            console.error("Error uploading Image: ", error.message);
-        } finally {
-            setAttendanceLoading(false)
         }
     };
 
@@ -79,7 +127,7 @@ const TakeAttendance = () => {
             <Header title={pageTitle} />
             {attendanceLoading ? (
                 <div className="flex items-center justify-center h-[84vh]">
-                    <BeatLoader size={20} color='#ff1f1f' />
+                    <MainLoader extraContent="Scanning Faces..." loadingText={false} />
                 </div>
 
             ) : (
@@ -104,7 +152,7 @@ const TakeAttendance = () => {
                                                         <CourseSelector availableCourses={availableCourses} selectedCourse={(value) => setSelectedCourse(value)} />
                                                         <BatchSelector availableBatch={availableBatches} selectedBatch={(value) => setSelectedBatches(value)} />
                                                     </div>
-                                                    <MultiImageUploadComponent imageData={uploadedImages} uploadedImages={setUploadedImages} maxImage={5}/>
+                                                    <MultiImageUploadComponent imageData={uploadedImages} uploadedImages={setUploadedImages} maxImage={5} />
                                                 </div>
                                                 {uploadedImages && selectedCourse && selectedBatches?.length > 0 && (
                                                     <div>

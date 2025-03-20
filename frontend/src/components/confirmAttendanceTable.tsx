@@ -23,6 +23,7 @@ const ConfirmAttendanceTable = ({ confirmAttendanceData, selectedCourse }: { con
     const [attendanceDataML, setAttendanceDataML] = useState(confirmAttendanceData);
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        localStorage.removeItem("attendanceRequestId");
         const result = attendanceDataML.map((item) => ({
             enroll: item.enroll,
             status: item.status,

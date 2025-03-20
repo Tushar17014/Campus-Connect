@@ -70,7 +70,7 @@ const StudentDashboard = () => {
         <div>
           <Header title="Dashboard" selectedCourse={(value) => setSelectedCourse(value)} availableCourses={coursesArray} />
           <main className="p-10 flex flex-col gap-10">
-            <HomeCardGrid studentPresent={attendancePercent} studentPresentCount={totalPresent} studentAbsentCount={totalClasses - totalPresent} studentClasses={totalClasses} userType="student" />
+            <HomeCardGrid studentPresent={Number(attendancePercent.toFixed(1))} studentPresentCount={totalPresent} studentAbsentCount={totalClasses - totalPresent} studentClasses={totalClasses} userType="student" />
             <div className="grid grid-cols-4 gap-10">
               <div className="col-span-2">
                 {announcements && studentData.enroll ? (
