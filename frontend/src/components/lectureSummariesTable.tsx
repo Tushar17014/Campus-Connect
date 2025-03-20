@@ -6,18 +6,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import { LectureSummariesTableProps } from "@/types"
 import { formatToddmmyy } from "@/lib/utils"
-import { DialogTitle } from "@radix-ui/react-dialog"
+import { Button } from "./ui/button"
+import { useNavigate } from "react-router-dom"
 
-const LectureSummaries = ({ data }: LectureSummariesTableProps) => {
+
+const LectureSummariesTable = ({ data }: LectureSummariesTableProps) => {
+    const navigate = useNavigate();
     return (
         <div>
             {data && data?.length > 0 ? (
@@ -36,21 +32,9 @@ const LectureSummaries = ({ data }: LectureSummariesTableProps) => {
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>{formatToddmmyy(item.date)}</TableCell>
                                 <TableCell>{item.course.name}</TableCell>
-                                <Dialog key={idx}>
-                                    <DialogTrigger asChild>
-                                        <TableCell className="max-w-72 truncate cursor-pointer">{item.summary}</TableCell>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle className="text-2xl font-semibold">Summary</DialogTitle>
-                                            <DialogDescription>
-                                                <div className="flex flex-col gap-5 text-white">
-                                                    {item.summary}
-                                                </div>
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                    </DialogContent>
-                                </Dialog>
+                                <TableCell>
+                                    <Button onClick={() => navigate(`/teacher/lectures/${item._id}`)}>View Summary</Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -64,4 +48,4 @@ const LectureSummaries = ({ data }: LectureSummariesTableProps) => {
     )
 }
 
-export default LectureSummaries
+export default LectureSummariesTable

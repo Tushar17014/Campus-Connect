@@ -98,6 +98,7 @@ declare type AttendanceRequestTableProps = {
 }
 
 declare type LectureSummariesProps = {
+    _id: string,
     name: string,
     course: {
         cid: string,

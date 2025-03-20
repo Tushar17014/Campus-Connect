@@ -10,3 +10,12 @@ export async function getLectureByTeacher(req, res) {
         console.error(err.message);
     }
 }
+
+export async function getLectureById(req, res) {
+    try {
+        const data = await Lectures.findOne({_id: req.query.lectureId}).populate("course");
+        return res.status(200).json(data);
+    } catch (err) {
+        console.error(err.message);
+    }
+}

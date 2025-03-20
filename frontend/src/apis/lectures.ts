@@ -9,3 +9,13 @@ export async function getLecturesByTeacher(uid: string | null) {
         return {};
     }
 }
+
+export async function getLecturesById(lectureId: string) {
+    try{
+        const response = await axiosInstance.get(`/lectures/lectureById?lectureId=${lectureId}`);
+        return response.data;
+    } catch(err: any){
+        console.error(err.message);
+        return {};
+    }
+}

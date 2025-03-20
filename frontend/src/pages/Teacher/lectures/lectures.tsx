@@ -11,7 +11,7 @@ import { RootState } from "@/store/store"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import "@/components/scrollbar.css"
-import LectureSummaries from "@/components/lectureSummaries"
+import LectureSummariesTable from "@/components/lectureSummariesTable"
 import { Separator } from "@/components/ui/separator"
 import { getLecturesByTeacher } from "@/apis/lectures"
 
@@ -93,7 +93,7 @@ const Lectures = () => {
             </CardHeader>
             <Separator className="mb-5" />
             <CardContent>
-              <LectureSummaries data={filteredLectures} />
+              <LectureSummariesTable data={filteredLectures} />
             </CardContent>
 
           </Card>
