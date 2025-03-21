@@ -34,7 +34,7 @@ const StudentAllCoursesAttendanceTable = ({ AllCourseAttendance }: StudentAllCou
               <TableCell>{record.course.cid}</TableCell>
               <TableCell>{record.course.name}</TableCell>
               <TableCell className={record.attendancePercentage < 60 ? "text-red-500" : "text-green-500"}>
-                {record.attendancePercentage} %
+                {record.attendancePercentage.toFixed(1)} %
               </TableCell>
               <TableCell>{record.totalClasses}</TableCell>
             </TableRow>

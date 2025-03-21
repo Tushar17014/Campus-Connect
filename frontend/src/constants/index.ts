@@ -16,6 +16,11 @@ export const teacherSideBarList = [
         url: "/teacher/take-attendance",
         icon: NotebookPen,
     },
+    {
+        title: "Check Attendance",
+        url: "/teacher/check-student-attendance",
+        icon: Hand,
+    },
 ]
 
 export const studentSideBarList = [

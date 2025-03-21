@@ -16,7 +16,7 @@ const Header = ({title, selectedDate, selectedCourse, availableCourses, title2} 
             {title2 && (
                 <h1 className="text-2xl font-semibold pr-10">{title2}</h1>
             )}
-            {title == "Dashboard" &&(
+            {(selectedDate || selectedCourse) &&(
                 <div className="pr-10 flex gap-5 items-center">
                     {selectedDate && (
                         <DateSelector selectedDate={selectedDate}/>

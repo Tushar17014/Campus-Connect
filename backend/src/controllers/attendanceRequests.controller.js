@@ -1,5 +1,6 @@
 import { AttendanceRequests } from "../models/attendanceRequests.model.js";
 import { Courses } from "../models/courses.model.js";
+import { ExtraAttendance } from "../models/extraAttendance.model.js";
 import { StudentData } from "../models/studentData.model.js";
 import { TeacherData } from "../models/TeacherData.model.js";
 import { updateAttendance } from "./attendance.controller.js";
@@ -69,30 +70,54 @@ export async function getAttendanceRequestsForTeacherByUid(req, res) {
 
 export async function handleAttendanceRequest(req, res, next) {
     try {
-        const { enroll, cid, date, status, attendanceRequestId } = req.body;
+        const { enroll, cid, status, attendanceRequestId } = req.body;
         let canSendNotification = true;
 
         const studentData = await StudentData.findOne({ enroll });
         if (!studentData || !studentData.expoPushToken) {
             canSendNotification = false;
         }
-        
+
         let expoPushToken = "";
-        if(canSendNotification) expoPushToken = studentData.expoPushToken; 
+        if (canSendNotification) expoPushToken = studentData.expoPushToken;
 
         if (status == "approved") {
             await AttendanceRequests.updateOne({ _id: attendanceRequestId }, { status });
-            const output = await updateAttendance(enroll, cid, date);
 
-            if(canSendNotification) await sendNotification(expoPushToken, "Attendance Approved", "Your attendance request has been approved!");
+            const course = await Courses.findOne({ cid });
+            if (!course) {
+                throw new Error("Course not found");
+            }
 
-            return res.status(200).json({ message: "Approved", ...output });
+            const isExtraAttendanceRecordExist = await ExtraAttendance.findOne({enroll});
+
+            if(!isExtraAttendanceRecordExist){
+                await ExtraAttendance.create({enroll, courses: []});
+            }
+
+            const result = await ExtraAttendance.findOneAndUpdate(
+                { enroll, "courses.course": course._id },
+                { $inc: { "courses.$.attendanceCount": 1 } },
+                { new: true }
+            );  
+
+            if (!result) {
+                await ExtraAttendance.findOneAndUpdate(
+                    { enroll },
+                    { $push: { courses: { course: course._id, attendanceCount: 1 } } },
+                    { upsert: true }
+                )
+            }
+
+            if (canSendNotification) await sendNotification(expoPushToken, "Attendance Approved", "Your attendance request has been approved!");
+
+            return res.status(200).json({ message: "Approved" });
         }
 
         await AttendanceRequests.updateOne({ _id: attendanceRequestId }, { status: "denied" });
         if (status == "denied") {
 
-            if(canSendNotification) await sendNotification(expoPushToken, "Attendance Denied", "Your attendance request has been denied!");
+            if (canSendNotification) await sendNotification(expoPushToken, "Attendance Denied", "Your attendance request has been denied!");
 
             return res.status(200).json({ message: "Denied" });
         }

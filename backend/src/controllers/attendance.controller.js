@@ -7,7 +7,9 @@ import fs from "fs";
 import FormData from "form-data";
 import axios from "axios";
 import { Courses } from "../models/courses.model.js";
-import { TakeAttendanceRequests } from "../models/takeAttendanceRequests.js";
+import { TakeAttendanceRequests } from "../models/takeAttendanceRequests.model.js";
+import { ExtraAttendance } from "../models/extraAttendance.model.js";
+import { StudentData } from "../models/studentData.model.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,25 +75,28 @@ export async function getAttendanceByCourseDate(req, res) {
 
 export async function getAttendanceByCourse(req, res, next) {
     try {
-        const data = await Attendance.find().lean();
-        const newdata = [];
-        data?.forEach(x => {
-            let d = {};
-            let out = [];
-            let flag = false;
-            x.courses?.forEach(ele => {
-                if (ele.cid == req.query.cid) {
-                    out = ele.attendanceRecords;
-                    flag = true;
-                }
-            })
-            if (flag) {
-                d.enroll = x.enroll
-                d.attendanceRecords = out;
-                newdata.push(d);
-            }
-        })
-        return res.status(200).json(newdata);
+        const data = await Attendance.find().sort({enroll: 1});
+
+        const extraAttendanceRecords = await ExtraAttendance.find({}).populate("courses.course");
+
+        const output = await Promise.all(
+            data?.filter(x => x.courses?.some(ele => ele.cid == req.query.cid))
+                .map(async (x) => {
+                    const course = x.courses.find(ele => ele.cid == req.query.cid);
+                    const extraAttendance = extraAttendanceRecords.find(item => item.enroll == x.enroll);
+                    let attendanceCount = 0;
+                    if(extraAttendance){
+                        attendanceCount = extraAttendance.courses.find(item => item.course.cid == req.query.cid)?.attendanceCount;
+                    }
+                    return {
+                        enroll: x.enroll,
+                        studentData: await StudentData.findOne({ enroll: x.enroll }).select('-password'),
+                        attendanceRecords: course.attendanceRecords,
+                        extraAttendance: attendanceCount ? attendanceCount : 0
+                    }
+                })
+        )
+        return res.status(200).json(output);
     } catch (err) {
         console.error(err.message);
     }

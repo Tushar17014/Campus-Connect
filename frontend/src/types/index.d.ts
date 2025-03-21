@@ -126,6 +126,18 @@ declare type MakrAttendanceData = {
 
 // Student
 
+declare type StudentData = {
+    _id: string,
+    enroll: number,
+    name: string,
+    gender?: string,
+    dob?: Date,
+    batch?: string,
+    courses?: CoursesProps[],
+    semester?: number,
+    profileImg?: string,
+}
+
 declare type StudentSliceProps = {
     _id: string | null,
     enroll: number | null,
@@ -156,4 +168,18 @@ declare type StudentAllCoursesAttendanceProps = {
     presentClasses: number | 0,
     totalClasses: number | 0,
     attendancePercentage: number | 0
+}
+
+declare type StudentAttendanceByCourseData = {
+    enroll: number,
+    studentData: StudentData,
+    attendanceRecords: StudentAttendanceRecordsProps[],
+    extraAttendance: number
+}
+
+declare type StudentAttendanceTableProps = {
+    studentData: StudentData,
+    extraAttendance: number,
+    finalPercent: number,
+    presentPercent: number
 }

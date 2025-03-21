@@ -14,6 +14,7 @@ import CheckCourseAttendance from "./pages/Student/checkAttendance/checkCourseAt
 import RequestAttendance from "./pages/Student/requestAttendance/requestAttendance"
 import TakeAttendance from "./pages/Teacher/takeAttendance/takeAttendance"
 import LectureSummary from "./pages/Teacher/lectures/lectureSummary"
+import CheckStudentAttendance from "./pages/Teacher/checkStudentAttendance/checkStudentAttendance"
 function App() {
   useEffect(() => {
     document.title = websiteTitle;
@@ -34,6 +35,7 @@ function App() {
             <Route path="/teacher/lectures" element={<Lectures />} />
             <Route path="/teacher/lectures/:lectureId" element={<LectureSummary />} />
             <Route path="/teacher/take-attendance" element={<TakeAttendance />} />
+            <Route path="/teacher/check-student-attendance" element={<CheckStudentAttendance />} />
 
             <Route path="/student" element={<StudentDashboard />} />
             <Route path="/student/check-attendance" element={<CheckAttendance />} />
