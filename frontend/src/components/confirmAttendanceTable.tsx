@@ -28,8 +28,6 @@ const ConfirmAttendanceTable = ({ confirmAttendanceData, selectedCourse }: { con
             enroll: item.enroll,
             status: item.status,
         }));
-        console.log(result);
-        console.log(selectedCourse);
         await markAttendance(result, selectedCourse);
         toast({
             title: "Attendance Marked",

@@ -19,6 +19,7 @@ export const updateAttendance = async (enroll, cid, date) => {
 
     let flag = false;
     let output = {};
+    console.log(date.toISOString());
 
     data.courses?.forEach(ele => {
         if (ele.cid == cid) {
@@ -44,14 +45,14 @@ export const updateAttendance = async (enroll, cid, date) => {
 
 export async function getAttendanceByCourseDate(req, res) {
     try {
-        const data = await Attendance.find().populate("enroll");
+        const data = await Attendance.find().populate("courses.course");
         const newdata = [];
         data?.forEach(x => {
             let d = {};
             let out = null;
             let flag = false;
             x.courses?.forEach(ele => {
-                if (ele.cid == req.query.cid) {
+                if (ele.course.cid == req.query.cid) {
                     for (let record in ele.attendanceRecords) {
                         if (ele.attendanceRecords[record].date.toISOString() == req.query.date) {
                             out = ele.attendanceRecords[record].status;
@@ -75,14 +76,14 @@ export async function getAttendanceByCourseDate(req, res) {
 
 export async function getAttendanceByCourse(req, res, next) {
     try {
-        const data = await Attendance.find().sort({enroll: 1});
+        const data = await Attendance.find().sort({enroll: 1}).populate("courses.course");
 
         const extraAttendanceRecords = await ExtraAttendance.find({}).populate("courses.course");
 
         const output = await Promise.all(
-            data?.filter(x => x.courses?.some(ele => ele.cid == req.query.cid))
+            data?.filter(x => x.courses?.some(ele => ele.course.cid == req.query.cid))
                 .map(async (x) => {
-                    const course = x.courses.find(ele => ele.cid == req.query.cid);
+                    const course = x.courses.find(ele => ele.course.cid == req.query.cid);
                     const extraAttendance = extraAttendanceRecords.find(item => item.enroll == x.enroll);
                     let attendanceCount = 0;
                     if(extraAttendance){
@@ -104,12 +105,12 @@ export async function getAttendanceByCourse(req, res, next) {
 
 export async function getAttendanceByCourseEnroll(req, res, next) {
     try {
-        const data = await Attendance.find().lean();
+        const data = await Attendance.find().populate("courses.course");
         let newdata = null;
         data?.forEach(x => {
             if (x.enroll == req.query.enroll) {
                 for (let ele in x.courses) {
-                    if (x.courses[ele].cid == req.query.cid) {
+                    if (x.courses[ele].course.cid == req.query.cid) {
                         newdata = x.courses[ele].attendanceRecords.sort((a, b) =>
                             new Date(b.date) - new Date(a.date)
                         );
@@ -118,21 +119,24 @@ export async function getAttendanceByCourseEnroll(req, res, next) {
                 }
             }
         })
+        const data2 = await Courses.find();
+        const temp = data2.map(ele => ele.name);
+        return res.status(200).json(temp);
         return res.status(200).json(newdata ? newdata : []);
     } catch (err) {
         console.error(err.message);
     }
 }
 
-export async function updateAttendanceByDate(req, res, next) {
-    try {
-        const { enroll, cid, date } = req.body;
-        const output = await updateAttendance(enroll, cid, date);
-        return res.status(200).json(output);
-    } catch (err) {
-        console.error(err.message);
-    }
-}
+// export async function updateAttendanceByDate(req, res, next) {
+//     try {
+//         const { enroll, cid, date } = req.body;
+//         const output = await updateAttendance(enroll, cid, date);
+//         return res.status(200).json(output);
+//     } catch (err) {
+//         console.error(err.message);
+//     }
+// }
 
 export async function getAttendanceByEnroll(req, res, next) {
     try {

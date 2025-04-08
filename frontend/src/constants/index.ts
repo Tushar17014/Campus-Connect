@@ -1,4 +1,4 @@
-import { BookmarkCheck, BookText, Hand, LayoutDashboard, NotebookPen } from "lucide-react"
+import { BookCheck, BookmarkCheck, BookText, Hand, LayoutDashboard, NotebookPen } from "lucide-react"
 
 export const teacherSideBarList = [
     {
@@ -38,6 +38,11 @@ export const studentSideBarList = [
         title: "Request Attendance",
         url: "/student/request-attendance",
         icon: BookmarkCheck,
+    },
+    {
+        title: "Choose Electives",
+        url: "/student/elective",
+        icon: BookCheck,
     },
 ]
 
