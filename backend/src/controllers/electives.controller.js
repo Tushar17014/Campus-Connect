@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Courses } from "../models/courses.model.js";
 import { Electives } from "../models/electives.model.js";
 import { StudentData } from "../models/studentData.model.js";
@@ -23,7 +24,7 @@ export async function frozenChoices(req, res, next) {
         let pref_count = 0;
         const output = data.choice.map(ele => {
             pref_count += 1
-            return({
+            return ({
                 cid: ele.cid,
                 name: ele.name,
                 credits: ele.credit,
@@ -51,16 +52,36 @@ export async function freezeChoices(req, res, next) {
             return courseData?._id;
         }));
 
-        if(!studentData || !courses){
-            return res.status(200).json({message: "Invalid Fields"})
+        if (!studentData || !courses) {
+            return res.status(200).json({ message: "Invalid Fields" })
         }
-        
-        const output = await Electives.create({enroll, student: studentData._id, has_freezed: true, choice: courses});
+
+        const output = await Electives.create({ enroll, student: studentData._id, has_freezed: true, choice: courses });
 
         return res.status(200).json(output);
 
     } catch (err) {
         console.error(err.message);
-        return res.status(200).json({error: err.message})
+        return res.status(200).json({ error: err.message })
+    }
+}
+
+export async function getSuggestion(req, res, next) {
+    try {
+        const { studentData } = req.body;
+
+        const formData = new FormData();
+        formData.append('studentData', studentData);
+
+        const response = await axios.post(`${process.env.COURSE_PREDICTOR_BASE_URL}/predictCourse`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+        return res.status(200).json(response.data);
+
+    } catch (err) {
+        console.error(err.message);
+        return res.status(200).json({ error: err.message })
     }
 }

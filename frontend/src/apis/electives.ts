@@ -35,3 +35,13 @@ export async function freezeChoices(enroll: number, choices: Course[]) {
         return {};
     }
 }
+
+export async function getCourseSuggestion(studentData: any) {
+    try {
+        const response = await axiosInstance.post(`/electives/suggestion`, {studentData});
+        return response.data;
+    } catch (err: any) {
+        console.error(err.message);
+        return {};
+    }
+}

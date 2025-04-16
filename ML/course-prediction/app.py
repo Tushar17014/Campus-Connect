@@ -7,10 +7,10 @@ app = Flask(__name__)
 def index():
     return "Hello World!"
 
-@app.route('/predictCourse', methods=['get'])
+@app.route('/predictCourse', methods=['POST'])
 def predictCourse():
 
-    student_data = request.form.get("student_data")
+    student_data = request.form.get("studentData")
 
     response = course_predictor(student_data)
 

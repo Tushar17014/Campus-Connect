@@ -21,7 +21,7 @@ export function AppSidebar({ userType }: AppSideBarProp) {
   const [userData, setUserData] = useState<TeacherSliceProps | StudentSliceProps | null>(null);
   const [sideBarNavigation, setSideBarNavigation] = useState<SideBarListProps[] | null>(null); 
   const teacherData = useSelector((state: RootState) => state.teacherReducer);
-  const studnetData = useSelector((state: RootState) => state.studentReducer);
+  const studentData = useSelector((state: RootState) => state.studentReducer);
 
   useEffect(() => {
     if(userType && userType != ""){
@@ -30,7 +30,7 @@ export function AppSidebar({ userType }: AppSideBarProp) {
         setSideBarNavigation(teacherSideBarList);
       }
       else if (userType == "student") {
-        setUserData(studnetData);
+        setUserData(studentData);
         setSideBarNavigation(studentSideBarList);
       }
     }

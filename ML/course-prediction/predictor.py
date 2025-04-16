@@ -15,15 +15,13 @@ def course_predictor(student_data):
         "Basic Numerical Methods" : 78,
         "Astro Physics" : 56,
         "Machine Learning" : 98,
-        "Deep Learning" : 80,
         "Operating Systems" : 79,
         "Data Structures and Algorithms" : 98,
         "Web Development" : 100,
         "cgpa" : 8.7,
-        "attendance" : 98,
-        "career_goal" : "DevOps"
+        "career_goal" : {student_data}
     Please suggest 1 to 2 elective subjects that would suit the student best out of these: 
-    ["Artificial Intelligence", "Deep Learning", "Data Science", "Blockchain", "Operations Research", "Marketing Management", "Cloud Computing", "UI/UX", "Product Strategy", "Backend Development", "Database Management", "DevOps", "IOT"]'''
+    ["Deep Learning", "Data Science", "Blockchain", "Operations Research", "Marketing Management", "Cloud Computing", "UI/UX", "Product Strategy", "Backend Development", "Database Management", "DevOps", "IOT"]'''
     response = client.models.generate_content(
         model="gemini-2.0-flash", contents=prompt
     )
