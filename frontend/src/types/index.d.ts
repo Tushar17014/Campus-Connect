@@ -183,3 +183,13 @@ declare type StudentAttendanceTableProps = {
     finalPercent: number,
     presentPercent: number
 }
+
+declare type MarksObject = {
+    cid: string,
+    score: number
+}
+
+declare type MarksExcelData = {
+    enroll: number,
+    [key: string]: number;
+}

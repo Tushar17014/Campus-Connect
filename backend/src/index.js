@@ -14,6 +14,7 @@ import attendanceRequestsRoute from "./routes/attendanceRequests.route.js"
 import lectureRoutes from "./routes/lectures.route.js"
 import courseRoutes from "./routes/course.route.js"
 import electiveRoutes from "./routes/electives.route.js"
+import marksRoutes from "./routes/marks.route.js"
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api/attendanceRequests", attendanceRequestsRoute);
 app.use("/api/lectures", lectureRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/electives", electiveRoutes);
+app.use("/api/marks", marksRoutes);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

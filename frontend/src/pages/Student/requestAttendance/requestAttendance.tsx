@@ -22,8 +22,8 @@ const RequestAttendance = () => {
     const { toast } = useToast();
 
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
-    const [attendanceData, setAttendanceData] = useState<Date[] | null>(null);
-    const [selectedAttendance, setSelectedAttendance] = useState<Date | null>(null);
+    const [attendanceData, setAttendanceData] = useState<string[] | null>(null);
+    const [selectedAttendance, setSelectedAttendance] = useState<string | null>(null);
     const [reason, setReason] = useState<string | null>(null);
     const [uploadedProof, setUploadedProof] = useState<File | null>(null);
     const [submitDisabled, setSubmitDisabled] = useState(true);
@@ -110,7 +110,7 @@ const RequestAttendance = () => {
                 setSubmitDisabled(true);
                 toast({
                     title: "Attendance Requests",
-                    description: `Attendance for ${formatToddmmyy(selectedAttendance)} has been requested`
+                    description: `Attendance for ${formatToddmmyy(new Date(selectedAttendance))} has been requested`
                 })
             } catch {
                 toast({ title: "Error", description: "Failed to submit attendance request." });
@@ -136,7 +136,7 @@ const RequestAttendance = () => {
                                         <CourseSelector availableCourses={availableCourses} selectedCourse={(value: any) => setSelectedCourse(value)} />
                                         {selectedCourse && attendanceData && attendanceData?.length > 0 && (
                                             <div className="flex gap-5 items-center">
-                                                <EventSelector data={attendanceData} selectedData={(value: any) => setSelectedAttendance(value)} />
+                                                <EventSelector data={attendanceData} selectedData={(value: any) => setSelectedAttendance(value)} isDate={true}/>
                                                 {selectedAttendance && (
                                                     <Input type="text" placeholder="Reason for request" className="w-96 bg-black text-white h-12 text-lg" onChange={(e) => setReason(e.target.value)} value={reason || ""} />
                                                 )}

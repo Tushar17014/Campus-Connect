@@ -1,4 +1,4 @@
-import { BookCheck, BookmarkCheck, BookText, Hand, LayoutDashboard, NotebookPen } from "lucide-react"
+import { BookCheck, BookmarkCheck, BookText, Hand, LayoutDashboard, NotebookPen, SquarePen } from "lucide-react"
 
 export const teacherSideBarList = [
     {
@@ -20,6 +20,11 @@ export const teacherSideBarList = [
         title: "Check Attendance",
         url: "/teacher/check-student-attendance",
         icon: Hand,
+    },
+    {
+        title: "Give Marks",
+        url: "/teacher/giveMarks",
+        icon: SquarePen,
     },
 ]
 
@@ -49,3 +54,5 @@ export const studentSideBarList = [
 export const websiteTitle = "Campus Connect"
 
 export const takeAttendanceRequestCheckInterval = 10000
+
+export const examEvents = ["T1", "T2", "T3"]

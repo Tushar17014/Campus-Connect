@@ -119,9 +119,9 @@ export async function getAttendanceByCourseEnroll(req, res, next) {
                 }
             }
         })
-        const data2 = await Courses.find();
-        const temp = data2.map(ele => ele.name);
-        return res.status(200).json(temp);
+        // const data2 = await Courses.find();
+        // const temp = data2.map(ele => ele.name);
+        // return res.status(200).json(temp);
         return res.status(200).json(newdata ? newdata : []);
     } catch (err) {
         console.error(err.message);

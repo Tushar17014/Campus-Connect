@@ -4,8 +4,8 @@ import { Courses } from "./courses.model.js";
 
 const MarksSchema = new mongoose.Schema({
     enroll: { type: Number, required: true, unique: true },
-    student: [{ type: mongoose.Schema.Types.ObjectId, ref: 'StudentData' }],
-    marksData: {
+    student: { type: mongoose.Schema.Types.ObjectId, ref: 'StudentData' },
+    marksData: [{
         semester: { type: Number, required: true },
         exams: [{
             examEvent: { type: String, required: true },
@@ -14,7 +14,7 @@ const MarksSchema = new mongoose.Schema({
                 score: { type: Number, required: true }
             }]
         }]
-    },
+    }],
     cgpa: { type: Number, required: true, default: 0 }
 });
 
