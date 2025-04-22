@@ -26,6 +26,11 @@ export const teacherSideBarList = [
         url: "/teacher/giveMarks",
         icon: SquarePen,
     },
+    {
+        title: "Find Slot",
+        url: "/teacher/findSlot",
+        icon: SquarePen,
+    },
 ]
 
 export const studentSideBarList = [
@@ -56,3 +61,7 @@ export const websiteTitle = "Campus Connect"
 export const takeAttendanceRequestCheckInterval = 10000
 
 export const examEvents = ["T1", "T2", "T3"]
+
+export const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+export const hours = [9, 10, 11, 12, 13, 14, 15];

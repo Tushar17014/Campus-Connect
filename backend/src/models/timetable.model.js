@@ -4,7 +4,7 @@ const LectureSchema = new mongoose.Schema({
     type: { type: String, required: true },
     batch: [{ type: String, required: true }],
     course: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true },
-    classroom: { type: String, required: true },
+    classroom: { type: String, default: "CS1" },
     teacher: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher", required: true }
 });
 

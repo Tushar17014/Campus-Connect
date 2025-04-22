@@ -15,6 +15,7 @@ import lectureRoutes from "./routes/lectures.route.js"
 import courseRoutes from "./routes/course.route.js"
 import electiveRoutes from "./routes/electives.route.js"
 import marksRoutes from "./routes/marks.route.js"
+import timetableRoutes from "./routes/timetable.route.js"
 
 const app = express();
 
@@ -23,16 +24,21 @@ const allowedOrigins = [
     'http://localhost:8081'
 ];
 
+// app.use(cors({
+//     origin: (origin, callback) => {
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+//     credentials: true
+// }));
+
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}));
+    origin: '*',
+    credentials: false
+}))
 
 app.use(express.json());
 
@@ -46,6 +52,7 @@ app.use("/api/lectures", lectureRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/electives", electiveRoutes);
 app.use("/api/marks", marksRoutes);
+app.use("/api/timetable", timetableRoutes);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

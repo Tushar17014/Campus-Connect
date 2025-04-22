@@ -37,8 +37,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const logout = async () => {
         delete axiosInstance.defaults.headers.common['Authorization'];
-        const enroll = await AsyncStorage.getItem("enroll")
-        await axiosInstance.post("/students/removeExpoPushToken", {enroll});
+        // const enroll = await AsyncStorage.getItem("enroll")
+        // await axiosInstance.post("/students/removeExpoPushToken", {enroll});
         setTokenState(null);
         await removeAuthToken();
         router.replace("/(auth)/login");

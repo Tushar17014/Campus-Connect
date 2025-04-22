@@ -14,7 +14,6 @@ import { RootState } from "@/store/store";
 import { ConfirmAttendanceTableProps } from "@/types";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { BeatLoader } from "react-spinners";
 
 const availableBatches = ["B1", "B2", "B3"];
 
@@ -140,7 +139,7 @@ const TakeAttendance = () => {
                                 <Card className="bg-mainbg m-5">
                                     <CardHeader >
                                         <div className="flex justify-between items-center">
-                                            <h3 className="text-2xl font-semibold">Upload Lecture Summary</h3>
+                                            <h3 className="text-2xl font-semibold">Take Attendance</h3>
                                         </div>
                                     </CardHeader>
                                     <CardContent>

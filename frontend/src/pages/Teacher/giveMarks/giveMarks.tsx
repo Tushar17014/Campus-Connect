@@ -75,7 +75,7 @@ const GiveMarks = () => {
                 <Card className="bg-mainbg m-5">
                     <CardHeader >
                         <div className="flex justify-between items-center">
-                            <h3 className="text-2xl font-semibold">Upload Lecture Summary</h3>
+                            <h3 className="text-2xl font-semibold">Student Marks</h3>
                         </div>
                     </CardHeader>
                     <CardContent>

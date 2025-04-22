@@ -17,6 +17,7 @@ import LectureSummary from "./pages/Teacher/lectures/lectureSummary"
 import CheckStudentAttendance from "./pages/Teacher/checkStudentAttendance/checkStudentAttendance"
 import ChooseElectives from "./pages/Student/chooseElectives/chooseElectives"
 import GiveMarks from "./pages/Teacher/giveMarks/giveMarks"
+import FindSlot from "./pages/Teacher/findSlot/findSlot"
 function App() {
   useEffect(() => {
     document.title = websiteTitle;
@@ -39,6 +40,7 @@ function App() {
             <Route path="/teacher/take-attendance" element={<TakeAttendance />} />
             <Route path="/teacher/check-student-attendance" element={<CheckStudentAttendance />} />
             <Route path="/teacher/giveMarks" element={<GiveMarks />} />
+            <Route path="/teacher/findSlot" element={<FindSlot />} />
 
             <Route path="/student" element={<StudentDashboard />} />
             <Route path="/student/check-attendance" element={<CheckAttendance />} />

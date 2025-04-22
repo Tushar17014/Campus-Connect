@@ -1,3 +1,4 @@
+import { CoursesProps } from "@/types";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -31,3 +32,8 @@ export function formatDate(selectedDate:Date) : { day: string, isoDate: string }
     }
     return { day: day, isoDate: isoDate };
 }
+
+export function getCourseNameByCid (cid: string, courses: CoursesProps[]) {
+  const course = courses.find(c => c.cid === cid);
+  return course?.name;
+};
