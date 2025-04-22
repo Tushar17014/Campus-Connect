@@ -32,7 +32,7 @@ const CheckStudentAttendance = () => {
                     const totalClasses = obj.attendanceRecords.length;
                     const presentClasses = obj.attendanceRecords.filter(item => item.status === true).length;
                     const presentPercent = ((presentClasses / totalClasses) * 100).toFixed(1);
-                    let finalPercent = ((presentClasses + obj.extraAttendance / totalClasses) * 100);
+                    let finalPercent = (((presentClasses + obj.extraAttendance) / totalClasses) * 100);
                     if (finalPercent > 100) {
                         finalPercent = 100
                     }
@@ -63,7 +63,7 @@ const CheckStudentAttendance = () => {
 
     return (
         <div className="flex-1 overflow-auto relative">
-            {teacherData && teacherData.courses && (
+            {teacherData && teacherData?.courses && (
                 <div>
                     <Header title="Check Attendance" selectedCourse={(value) => setSelectedCourse(value)} availableCourses={teacherData.courses} />
                     {studentAttendance ? (
