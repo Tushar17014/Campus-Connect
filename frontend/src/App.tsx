@@ -18,6 +18,7 @@ import CheckStudentAttendance from "./pages/Teacher/checkStudentAttendance/check
 import ChooseElectives from "./pages/Student/chooseElectives/chooseElectives"
 import GiveMarks from "./pages/Teacher/giveMarks/giveMarks"
 import FindSlot from "./pages/Teacher/findSlot/findSlot"
+import StudentLectures from "./pages/Student/lectures/lectures"
 function App() {
   useEffect(() => {
     document.title = websiteTitle;
@@ -46,6 +47,7 @@ function App() {
             <Route path="/student/check-attendance" element={<CheckAttendance />} />
             <Route path="/student/check-attendance/:cid" element={<CheckCourseAttendance />} />
             <Route path="/student/request-attendance" element={<RequestAttendance />} />
+            <Route path="/student/lectures" element={<StudentLectures />} />
             <Route path="/student/elective" element={<ChooseElectives />} />
           </Route>
             <Route path="*" element={<Redirect />} />

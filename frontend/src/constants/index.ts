@@ -50,6 +50,11 @@ export const studentSideBarList = [
         icon: BookmarkCheck,
     },
     {
+        title: "Lectures",
+        url: "/student/lectures",
+        icon: BookText,
+    },
+    {
         title: "Choose Electives",
         url: "/student/elective",
         icon: BookCheck,

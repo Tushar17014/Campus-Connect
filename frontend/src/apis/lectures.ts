@@ -19,3 +19,13 @@ export async function getLecturesById(lectureId: string) {
         return {};
     }
 }
+
+export async function getLecturesByStudent(enroll: number | null) {
+    try{
+        const response = await axiosInstance.get(`/lectures/studentLectures?enroll=${enroll}`);
+        return response.data;
+    } catch(err: any){
+        console.error(err.message);
+        return {};
+    }
+}
