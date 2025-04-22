@@ -193,3 +193,9 @@ declare type MarksExcelData = {
     enroll: number,
     [key: string]: number;
 }
+
+declare type ChatbotHistory = {
+    role: string,
+    text: string,
+    hide?: boolean
+}

@@ -1,3 +1,4 @@
+import Chatbot from "@/components/chatbot/chatbot";
 import { AppSidebar } from "@/components/sidebar/appSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { useUserType } from "@/providers/contentProvider";
@@ -11,6 +12,9 @@ const MainLayout = () => {
       <SidebarProvider>
         <AppSidebar userType={userType}/>
         <Outlet />
+        {userType == "student" && (
+          <Chatbot />
+        )}
       </SidebarProvider>
     </div>
   )
